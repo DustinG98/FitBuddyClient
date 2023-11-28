@@ -15,14 +15,27 @@ export class AuthService {
     pathname: string;
     constructor (pathname: string) {
         this.pathname = pathname;
-        this.checkAuth();
+    }
+
+    async getAccessToken(): Promise<string> {
+        const loginInfo = await SecureStore.getItemAsync('loginInfo');
+        if (loginInfo) {
+            const loginInfoObj = JSON.parse(loginInfo) as { token: string, expiration: Date };
+            if (new Date(loginInfoObj.expiration) > new Date() && loginInfoObj.token) {
+                return loginInfoObj.token;
+            }
+        }
+        this.logout();
+        return '';
     }
     
     async checkAuth(): Promise<void> {
         const loginInfo = await SecureStore.getItemAsync('loginInfo');
         const username = await SecureStore.getItemAsync('username');
         const password = await SecureStore.getItemAsync('password');
-        if (loginInfo) {
+        const storeUserInfo = await SecureStore.getItemAsync('storeUserInfo');
+        
+        if (loginInfo && storeUserInfo === 'true') {
             const loginInfoObj = JSON.parse(loginInfo) as { token: string, expiration: Date };
             if (new Date(loginInfoObj.expiration) > new Date() && loginInfoObj.token) {
                 this.loggedIn = true;
@@ -32,9 +45,27 @@ export class AuthService {
             } else {
                 return await this.logout();
             }
+        } else if(username && password && storeUserInfo === 'true') {
+            return await this.login(username, password, false);
         }
         return await this.logout();
     }
+
+    async register(email:string, username: string, password: string): Promise<void> {
+        const response = await fetch(process.env.EXPO_PUBLIC_API_ADDRESS + '/auth/register', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({email, username, password})
+        });
+
+        if (response.ok) {
+            return await this.login(username, password, true);
+        }
+        throw new Error('Unable to register user');
+    }
+
     async login(username: string, password: string, storeUserPassword: boolean): Promise<void> { 
         const response = await fetch(process.env.EXPO_PUBLIC_API_ADDRESS + '/auth/login', {
             method: 'POST',
@@ -43,6 +74,7 @@ export class AuthService {
             },
             body: JSON.stringify({email: username, password})
         });
+        await SecureStore.setItemAsync('storeUserInfo', storeUserPassword.toString());
 
         if (response.ok) {
             const { token } = await response.json() as { token: Token };
