@@ -2,7 +2,7 @@ import { Text, View, StyleSheet } from 'react-native'
 import { Link, usePathname } from 'expo-router'
 import ChatBubble from '../assets/icons/ChatBubble'
 import HomeIcon from '../assets/icons/Home'
-import Divider from '../shared/Divider'
+import Divider from '../components/shared/Divider'
 import Calendar from '../assets/icons/Calendar'
 import Profile from '../assets/icons/Profile'
 export default function NavBar () {
@@ -11,10 +11,10 @@ export default function NavBar () {
         <>
             <Divider/>
             <View style={styles.container}>
-                <Link href='/' style={styles.link}>
+                <Link href='/home' style={styles.link}>
                     <View style={styles.routeContainer}>
-                        <HomeIcon style={styles.icon} color={path === '/' ? '#FFDD00' : '#fff'}/>
-                        <Text style={path === '/' ? styles.activeLinkText : styles.linkText}>Home</Text>
+                        <HomeIcon style={styles.icon} color={path === '/home' ? '#FFDD00' : '#fff'}/>
+                        <Text style={path === '/home' ? styles.activeLinkText : styles.linkText}>Home</Text>
                     </View>
                 </Link>
                 <Link href='/schedule' style={styles.link}>
