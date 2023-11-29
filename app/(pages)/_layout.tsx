@@ -8,7 +8,7 @@ import { TouchableHighlight } from 'react-native'
 import { TouchableOpacity } from 'react-native'
 import { Text } from 'react-native'
 import { AuthService } from '../../services/AuthService'
-import { WebSocketService } from '../../services/WebSocketService'
+import { Socket } from '../../services/WebSocketService'
 
 export default function App() {
     const pathname = usePathname()
@@ -19,16 +19,15 @@ export default function App() {
     }
 
     const [connected, setConnected] = useState(false);
-    const [socket, setSocket] = useState<WebSocketService>();
+    const [socket, setSocket] = useState<Socket>();
 
     useEffect(() => {
         const _authService = new AuthService(pathname);
         setAuthService(_authService)
         _authService.getAccessToken().then((token) => {
             if (token) {
-                const webSocketService = new WebSocketService(token);
-                setSocket(webSocketService);
-                console.log(socket?.connected)
+                const _socket = new Socket(token);
+                setSocket(_socket);
             }
         })
     }, [])
