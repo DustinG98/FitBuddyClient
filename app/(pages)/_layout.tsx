@@ -8,7 +8,9 @@ import { TouchableHighlight } from 'react-native'
 import { TouchableOpacity } from 'react-native'
 import { Text } from 'react-native'
 import { AuthService } from '../../services/AuthService'
-import { Socket } from '../../services/WebSocketService'
+import { socket } from '../../redux/store'
+import { CreatePost } from '../../components/posts/CreatePost'
+import * as ImagePicker from 'expo-image-picker';
 
 export default function App() {
     const pathname = usePathname()
@@ -19,18 +21,35 @@ export default function App() {
     }
 
     const [connected, setConnected] = useState(false);
-    const [socket, setSocket] = useState<Socket>();
+
+    const [createModalVisible, setCreateModalVisible] = useState(false);
+
 
     useEffect(() => {
         const _authService = new AuthService(pathname);
         setAuthService(_authService)
         _authService.getAccessToken().then((token) => {
-            if (token) {
-                const _socket = new Socket(token);
-                setSocket(_socket);
+            if (token && !socket.connected) {
+                socket.open(token);
             }
         })
     }, [])
+
+    const [image, setImage] = useState<ImagePicker.ImagePickerResult | null>(null);
+
+    async function pickImage() {
+        let result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            quality: 1,
+        });
+        
+        setImage(result);
+        toggleModal();
+    }
+
+    const toggleModal = () => {
+        setCreateModalVisible(!createModalVisible);
+    }
 
     return (
         <>
@@ -50,9 +69,6 @@ export default function App() {
                             style={styles.signOutBtn}>
                             <Text style={styles.signOutText}>Sign Out</Text>
                         </TouchableOpacity>
-                    </>,
-                    headerLeft: () => <>
-                        <Text style={{color: '#fff', fontSize: 12, fontWeight: 'bold', marginLeft: 10}}>Connected: {connected ? 'Yes' : 'No'}</Text>
                     </>,
                     animation: 'simple_push',
                 }}
@@ -75,10 +91,14 @@ export default function App() {
                 <Stack.Screen name="profile" options={{
                     headerBackButtonMenuEnabled: false,
                     headerBackVisible: false,
-                }} />
+                }} 
+                />
 
             </Stack>
-            <NavBar/>
+            { socket ? <NavBar socket={socket} toggleModal={pickImage}/> : null }
+            {createModalVisible && socket ? 
+                <CreatePost socket={socket} modalOpen={createModalVisible} image={image} toggleModal={toggleModal} />
+            : null}
         </>
     )
 }
