@@ -14,25 +14,40 @@ export function CreatePost({ socket, modalOpen, toggleModal, image }: { socket: 
 
     function getS3Url() {
         return new Promise((resolve, reject) => {
-            socket.send('get_s3_url', { imageType: 'png' })
-            socket.subscribe('get_s3_url_success', (data: any) => {
+            function handleGetS3UrlSuccess(data: any) {
+                socket.unsubscribe('get_s3_url_success', handleGetS3UrlSuccess)
+                socket.unsubscribe('get_s3_url_error', handleGetS3UrlError)
                 resolve(data)
-            })
-            socket.subscribe('get_s3_url_error', (data: any) => {
+            }
+            function handleGetS3UrlError(data: any) {
+                socket.unsubscribe('get_s3_url_success', handleGetS3UrlSuccess)
+                socket.unsubscribe('get_s3_url_error', handleGetS3UrlError)
                 reject(data)
-            })
+            }
+
+            socket.send('get_s3_url', { imageType: 'png' })
+            socket.subscribe('get_s3_url_success', handleGetS3UrlSuccess)
+            socket.subscribe('get_s3_url_error', handleGetS3UrlError)
         })
     }
 
     function createPost(description: string, image: string) {
+
+
         return new Promise((resolve, reject) => {
-            socket.send('create_update_post', { content: description, image })
-            socket.subscribe('post_create_update_success', (data: any) => {
+            function handleCreatePostSuccess(data: any) {
+                socket.unsubscribe('post_create_update_success', handleCreatePostSuccess)
+                socket.unsubscribe('post_create_update_error', handleCreatePostError)
                 resolve(data)
-            })
-            socket.subscribe('post_create_update_error', (data: any) => {
+            }
+            function handleCreatePostError(data: any) {
+                socket.unsubscribe('post_create_update_success', handleCreatePostSuccess)
+                socket.unsubscribe('post_create_update_error', handleCreatePostError)
                 reject(data)
-            })
+            }
+            socket.send('create_update_post', { content: description, image })
+            socket.subscribe('post_create_update_success', handleCreatePostSuccess)
+            socket.subscribe('post_create_update_error', handleCreatePostError)
         })
     }
 

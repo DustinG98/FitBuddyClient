@@ -18,26 +18,42 @@ export default function Profile (props: any, data: any) {
   const postState = useAppSelector((state: State) => state.postsState)
   const usersState = useAppSelector((state: State) => state.usersState)
 
+  const handleGetPostSuccess = (data: any) => {
+    dispatch({ type: GET_POSTS_SUCCESS, payload: data })
+  }
+
+  const handleGetPostError = (data: any) => {
+    dispatch({ type: GET_POSTS_ERROR, payload: data })
+  }
+
+  const handleGetProfileSuccess = (data: any) => {
+    dispatch({ type: GET_PROFILE_SUCCESS, payload: data })
+  }
+
+  const handleGetProfileError = (data: any) => {
+    dispatch({ type: GET_PROFILE_ERROR, payload: data })
+  }
+
   useEffect(() => {
-    socket.subscribe('get_posts_by_id_success', (data: any) => {
-      dispatch({ type: GET_POSTS_SUCCESS, payload: data })
-    })
+    socket.subscribe('get_posts_by_id_success', handleGetPostSuccess)
   
-    socket.subscribe('get_posts_by_id_error', (data: any) => {
-      dispatch({ type: GET_POSTS_ERROR, payload: data })
-    })
+    socket.subscribe('get_posts_by_id_error', handleGetPostError)
 
-    socket.subscribe('get_profile_success', (data: any) => {
-      dispatch({ type: GET_PROFILE_SUCCESS, payload: data })
-    })
+    socket.subscribe('get_profile_success', handleGetProfileSuccess)
 
-    socket.subscribe('get_profile_error', (data: any) => {
-      dispatch({ type: GET_PROFILE_ERROR, payload: data })
-    })
+    socket.subscribe('get_profile_error', handleGetProfileError)
+    
 
     if(!postState.posts || !postState.posts.length) dispatch(FetchPosts('1'))
 
     if(!usersState.profile || !usersState.profile.id) dispatch(FetchProfile())
+
+    return () => {
+      socket.unsubscribe('get_posts_by_id_success', handleGetPostSuccess)
+      socket.unsubscribe('get_posts_by_id_error', handleGetPostError)
+      socket.unsubscribe('get_profile_success', handleGetProfileSuccess)
+      socket.unsubscribe('get_profile_error',  handleGetProfileError)
+    }
   }, [])
 
   function onRefresh() {

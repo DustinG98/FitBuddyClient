@@ -35,7 +35,7 @@ export class AuthService {
         const password = await SecureStore.getItemAsync('password');
         const storeUserInfo = await SecureStore.getItemAsync('storeUserInfo');
         
-        if (loginInfo && storeUserInfo === 'true') {
+        if (loginInfo) {
             const loginInfoObj = JSON.parse(loginInfo) as { token: string, expiration: Date };
             if (new Date(loginInfoObj.expiration) > new Date() && loginInfoObj.token) {
                 this.loggedIn = true;
