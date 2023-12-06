@@ -83,7 +83,6 @@ export function CreatePost({ socket, modalOpen, toggleModal, image }: { socket: 
                     .then(() => {
                         createPost(description, data.key)
                             .then((data: any) => {
-                                console.log({data})
                                 toggleModal()
                             })
                     })

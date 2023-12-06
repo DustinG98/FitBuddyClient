@@ -8,7 +8,6 @@ const initialState = {
 }
 
 const posts = (state: PostsState = initialState, action: any) => {
-    console.log({state, action})
     switch(action.type) {
         case GET_POSTS_START: {
             return {

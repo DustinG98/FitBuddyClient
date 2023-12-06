@@ -34,15 +34,13 @@ export default function App() {
 
   const handleLogin = () => {
     authService.login(formState.email, formState.password, formState.storeUserPassword)
-      .then((response) => { 
-        console.log({response});
+      .then(() => { 
       })
   }
 
   const handleSignUp = () => {
     authService.register(formState.email, formState.userName, formState.password)
-      .then((response) => {
-        console.log({response});
+      .then(() => {
       })
   }
 
