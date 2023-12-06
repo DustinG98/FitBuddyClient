@@ -1,33 +1,40 @@
-import { View, Text, Image, StyleSheet, ActivityIndicator } from "react-native"
+import { View, Text, Image, StyleSheet, ActivityIndicator, ImageBackground, Dimensions } from "react-native"
 import { WorkoutPlanWorkout } from "../../models/workouts"
 import { PostRecord } from "../../models/posts"
 import { AntDesign } from '@expo/vector-icons'; 
 import { useEffect, useState } from "react";
 
 export default function Post ({ post }: { post: PostRecord }) {
+    const [preLoadFinished, setPreloadFinished] = useState(false)
+
     const [loaded, setLoaded] = useState(false)
 
     useEffect(() => {
         Image.prefetch(`${process.env.EXPO_PUBLIC_POST_BUCKET}/${post.image}`)
         .then(() => {
-            setLoaded(true)
+            setPreloadFinished(true)
         })
     }, [])
+
+    const postComponent = () => {
+        return (
+            <ImageBackground onLoadEnd={() => setLoaded(true)} source={{ uri: `${process.env.EXPO_PUBLIC_POST_BUCKET}/${post.image}` }} style={styles.postImage} >
+                <View style={styles.postContent}>
+                    <View style={styles.actionContainer}>
+                        <AntDesign name="hearto" size={24} color="#FFDD00" />
+                        <Text style={styles.likeText}>{post.likes}</Text>
+                    </View>
+                </View>
+            </ImageBackground>
+        )
+    }
 
     return (
         <View style={styles.postContainer}>
             {
-                loaded ? (
-                    <>
-                        <Image source={{ uri: `${process.env.EXPO_PUBLIC_POST_BUCKET}/${post.image}` }} style={styles.postImage} />
-                        <View style={styles.postContent}>
-                            <View style={styles.postContent}>
-                                <AntDesign name="hearto" size={24} color="#FFDD00" />
-                                <Text style={styles.likeText}>{post.likes}</Text>
-                            </View>
-                        </View>
-                    </>
-                ) : <ActivityIndicator size="small" color="#FFDD00" />
+                preLoadFinished ? postComponent() : <View style={styles.imagePlaceholder}>
+                        <ActivityIndicator size="small" color="#FFDD00" />
+                    </View>
             }
 
         </View>
@@ -35,11 +42,23 @@ export default function Post ({ post }: { post: PostRecord }) {
 }
 
 const styles = StyleSheet.create({
+    imagePlaceholder: {
+        height: 200,
+        borderRadius: 10,
+        resizeMode: 'cover',
+        marginBottom: 10,
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'flex-end',
+    },
     postImage: {
         height: 200,
         borderRadius: 10,
         resizeMode: 'cover',
         marginBottom: 10,
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'flex-end',
     },
     postText: {
         color: '#fff',
@@ -53,15 +72,22 @@ const styles = StyleSheet.create({
         fontSize: 12
     },
     postContainer: {
-        backgroundColor: '#212529',
-        padding: 10,
         borderRadius: 10,
-        width: 150
+        width: Dimensions.get('window').width / 3 - 4,
+        margin: 2,
     },
     postContent: {
         display: 'flex',
         flexDirection: 'row',
-        justifyContent: 'space-between',
+        justifyContent: 'flex-end',
         alignItems: 'center',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
     },
+    actionContainer: {
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: '5%',
+    }
 })

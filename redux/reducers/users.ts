@@ -1,29 +1,28 @@
-import { GET_POSTS_ERROR, GET_POSTS_START, GET_POSTS_SUCCESS } from "../types/posts";
-import { PostsState } from "../types/state";
+import { UsersState } from "../types/state";
+import { GET_PROFILE_ERROR, GET_PROFILE_START, GET_PROFILE_SUCCESS } from "../types/users";
 
 const initialState = {
     loading: false,
-    posts: [],
+    profile: undefined,
     error: null,
 }
 
-const posts = (state: PostsState = initialState, action: any) => {
-    console.log({state, action})
+const posts = (state: UsersState = initialState, action: any) => {
     switch(action.type) {
-        case GET_POSTS_START: {
+        case GET_PROFILE_START: {
             return {
                 ...state,
                 loading: true,
             }
         }
-        case GET_POSTS_SUCCESS: {
+        case GET_PROFILE_SUCCESS: {
             return {
                 ...state,
                 loading: false,
-                posts: action.payload,
+                profile: action.payload,
             }
         }
-        case GET_POSTS_ERROR: {
+        case GET_PROFILE_ERROR: {
             return {
                 ...state,
                 loading: false,

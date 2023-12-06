@@ -39,10 +39,20 @@ export default function App() {
       })
   }
 
+  const handleSignUp = () => {
+    authService.register(formState.email, formState.userName, formState.password)
+      .then((response) => {
+        console.log({response});
+      })
+  }
+
   const onPressSubmit = () => {
     switch(formType) {
       case 'login':
         handleLogin();
+        break;
+      case 'signup':
+        handleSignUp();
         break;
       default:
         break;

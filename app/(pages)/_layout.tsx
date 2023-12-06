@@ -28,11 +28,16 @@ export default function App() {
     useEffect(() => {
         const _authService = new AuthService(pathname);
         setAuthService(_authService)
-        _authService.getAccessToken().then((token) => {
-            if (token && !socket.connected) {
-                socket.open(token);
-            }
-        })
+        _authService.checkAuth()
+            .then(() => {
+                if(_authService.loggedIn) {
+                    _authService.getAccessToken().then((token) => {
+                        if (token && !socket.connected) {
+                            socket.open(token);
+                        }
+                    })
+                }
+            })
     }, [])
 
     const [image, setImage] = useState<ImagePicker.ImagePickerResult | null>(null);

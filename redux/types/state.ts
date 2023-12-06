@@ -1,3 +1,9 @@
+export interface UsersState {
+    loading: boolean;
+    profile: any;
+    error: any;
+}
+
 export interface PostsState {
     loading: boolean;
     posts: any[];
@@ -6,4 +12,5 @@ export interface PostsState {
 
 export interface State {
     postsState: PostsState;
+    usersState: UsersState;
 }
