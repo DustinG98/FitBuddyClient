@@ -65,7 +65,7 @@ export default function Profile (props: any, data: any) {
         header: () => (usersState.profile && <ProfileHeader profile={usersState.profile}/>)
       }}/>
       {
-       postState.posts && postState.posts.length > 0 ? <FlatList
+       !postState.loading && postState.posts && postState.posts.length > 0 ? <FlatList
         data={postState.posts}
         keyExtractor={item => item.sortKey}
         renderItem={({ item }) => (
@@ -74,7 +74,7 @@ export default function Profile (props: any, data: any) {
         numColumns={3}
         refreshControl={<RefreshControl tintColor='#FFDD00'  refreshing={postState.loading} onRefresh={onRefresh} />}
         contentContainerStyle={styles.postContainer}
-      /> : <ActivityIndicator size="small" color="#FFDD00" />
+      /> : postState.loading  ? <ActivityIndicator size="large" color="#FFDD00" /> : <View><Text style={{ color: '#fff' }}>No Posts</Text></View>
                         
 
       }

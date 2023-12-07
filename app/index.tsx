@@ -33,15 +33,24 @@ export default function App() {
   }
 
   const handleLogin = () => {
-    authService.login(formState.email, formState.password, formState.storeUserPassword)
+    if(formState.email && formState.password) {
+      authService.login(formState.email, formState.password, formState.storeUserPassword)
       .then(() => { 
       })
+    } else {
+      //TODO: Handle Error Showing
+    }
   }
 
   const handleSignUp = () => {
-    authService.register(formState.email, formState.userName, formState.password)
+    if(formState.email && formState.password && formState.userName) {
+      authService.register(formState.email, formState.userName, formState.password)
       .then(() => {
       })
+    } else {
+      //TODO: Handle Error Showing
+    }
+
   }
 
   const onPressSubmit = () => {

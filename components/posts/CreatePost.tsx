@@ -1,4 +1,4 @@
-import { View, Text, ImageBackground, Modal, StyleSheet, TextInput, Button, TouchableHighlight, KeyboardAvoidingView } from "react-native"
+import { View, Text, ImageBackground, Modal, StyleSheet, TextInput, Button, TouchableHighlight, KeyboardAvoidingView, Dimensions, ActivityIndicator } from "react-native"
 import * as ImagePicker from 'expo-image-picker';
 import { useEffect, useState } from "react";
 import { Socket } from '../../services/WebSocketService';
@@ -9,6 +9,8 @@ import {Buffer} from "buffer";
 
 export function CreatePost({ socket, modalOpen, toggleModal, image }: { socket: Socket, modalOpen: boolean, toggleModal: Function, image: ImagePicker.ImagePickerResult | null }) {
     const [description, setDescription] = useState('');
+
+    const [loading, setLoading] = useState(false);
 
     const [imageUrl, setImageUrl] = useState('');
 
@@ -77,12 +79,15 @@ export function CreatePost({ socket, modalOpen, toggleModal, image }: { socket: 
 
     async function handlePost(e: any) {
         e.preventDefault();
+        setLoading(true)
         getS3Url()
             .then((data: any) => {
                 uploadImage(data)
                     .then(() => {
                         createPost(description, data.key)
                             .then((data: any) => {
+                                setLoading(false)
+
                                 toggleModal()
                             })
                     })
@@ -96,7 +101,7 @@ export function CreatePost({ socket, modalOpen, toggleModal, image }: { socket: 
             animationType="slide"
         >
             <View style={styles.modal}>
-                {image && image.assets && image.assets[0] !== null ? <ImageBackground source={{uri: image.assets[0].uri}} style={{ width: image.assets[0].width / 3, height: image.assets[0].height / 3, zIndex: 0, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }} >
+            {image && image.assets && image.assets[0] !== null && !loading ? <ImageBackground source={{uri: image.assets[0].uri}} style={{ width: Dimensions.get("window").width, height: Dimensions.get("window").height, zIndex: 0, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }} >
                     <View style={styles.headerContainer}>
                         <Text style={{ color: '#fff' }}>Create Post</Text>
                         <TouchableHighlight onPress={() => toggleModal()}
@@ -120,7 +125,8 @@ export function CreatePost({ socket, modalOpen, toggleModal, image }: { socket: 
                         </TouchableHighlight>
                     </KeyboardAvoidingView>
                     
-                </ImageBackground> : null}
+                </ImageBackground> : <ActivityIndicator size="small" color="#FFDD00" />
+                    }
             </View>
         </Modal>
     );
