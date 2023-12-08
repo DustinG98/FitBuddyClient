@@ -4,14 +4,17 @@ export class Socket {
     IdToken: any
 
     subscriptions: {[id:string]: CallableFunction[]}
-    constructor(token: string) {
-        const url = process.env.EXPO_PUBLIC_WEBSOCKET_ADDRESS + '?token=' + token;
+    constructor() {
         this.subscriptions = {}
         this.connected = false
-        this._instance = new WebSocket(url);
-        this._instance.onopen = this.onOpen.bind(this)
-        this._instance.onclose = this.onClose.bind(this)
-        this._instance.onmessage = this.onMessage.bind(this)
+    }
+
+    open(token: string) {
+      const url = process.env.EXPO_PUBLIC_WEBSOCKET_ADDRESS + '?token=' + token;
+      this._instance = new WebSocket(url);
+      this._instance.onopen = this.onOpen.bind(this)
+      this._instance.onclose = this.onClose.bind(this)
+      this._instance.onmessage = this.onMessage.bind(this)
     }
 
     subscribe(event:string, cb: CallableFunction) {
@@ -31,7 +34,6 @@ export class Socket {
     }
     private onOpen() {
       this.connected = true
-      this.send('connected', { IdToken: this.IdToken })
     }
     
     private onClose() {

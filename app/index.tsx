@@ -33,16 +33,33 @@ export default function App() {
   }
 
   const handleLogin = () => {
-    authService.login(formState.email, formState.password, formState.storeUserPassword)
-      .then((response) => { 
-        console.log({response});
+    if(formState.email && formState.password) {
+      authService.login(formState.email, formState.password, formState.storeUserPassword)
+      .then(() => { 
       })
+    } else {
+      //TODO: Handle Error Showing
+    }
+  }
+
+  const handleSignUp = () => {
+    if(formState.email && formState.password && formState.userName) {
+      authService.register(formState.email, formState.userName, formState.password)
+      .then(() => {
+      })
+    } else {
+      //TODO: Handle Error Showing
+    }
+
   }
 
   const onPressSubmit = () => {
     switch(formType) {
       case 'login':
         handleLogin();
+        break;
+      case 'signup':
+        handleSignUp();
         break;
       default:
         break;
