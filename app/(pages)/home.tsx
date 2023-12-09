@@ -1,16 +1,11 @@
-import { ActivityIndicator, Dimensions, FlatList, Image, RefreshControl, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Dimensions, FlatList, StyleSheet, View } from 'react-native';
 import { useEffect } from 'react';
 import { ThunkDispatch } from '@reduxjs/toolkit';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
-import { FetchPosts } from '../../redux/actions/posts';
 import { socket } from '../../redux/store';
-import { GET_POSTS_ERROR, GET_POSTS_SUCCESS } from '../../redux/types/posts';
 import { State } from '../../redux/types/state';
-import PostThumbnail from '../../components/posts/PostThumbnail';
-import { FetchProfile, FetchUserFeed } from '../../redux/actions/users';
-import { GET_FEED_ERROR, GET_FEED_SUCCESS, GET_PROFILE_ERROR, GET_PROFILE_SUCCESS } from '../../redux/types/users';
-import { ProfileHeader } from '../../components/profile/ProfileHeader';
-import { Stack } from 'expo-router';
+import { FetchUserFeed } from '../../redux/actions/users';
+import { GET_FEED_ERROR, GET_FEED_SUCCESS } from '../../redux/types/users';
 import Post from '../../components/posts/Post';
 
 export default function Profile (props: any, data: any) {
