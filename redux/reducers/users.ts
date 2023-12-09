@@ -9,7 +9,6 @@ const initialState = {
 }
 
 const posts = (state: UsersState = initialState, action: any) => {
-    console.log(action)
     switch(action.type) {
         case GET_PROFILE_START: {
             return {
