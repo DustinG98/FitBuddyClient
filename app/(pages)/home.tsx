@@ -8,7 +8,7 @@ import { FetchUserFeed } from '../../redux/actions/users';
 import { GET_FEED_ERROR, GET_FEED_SUCCESS } from '../../redux/types/users';
 import Post from '../../components/posts/Post';
 
-export default function Profile (props: any, data: any) {
+export default function Home (props: any, data: any) {
   const dispatch: ThunkDispatch<any, any, any> = useAppDispatch();
 
   const postState = useAppSelector((state: State) => state.postsState)
