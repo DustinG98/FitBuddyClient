@@ -39,7 +39,7 @@ export class AuthService {
             const loginInfoObj = JSON.parse(loginInfo) as { token: string, expiration: Date };
             if (new Date(loginInfoObj.expiration) > new Date() && loginInfoObj.token) {
                 this.loggedIn = true;
-                return router.replace('/home');
+                return
             } else if(username && password) {
                 return await this.login(username, password, false);
             } else {

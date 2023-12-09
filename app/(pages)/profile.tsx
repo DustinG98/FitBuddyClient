@@ -6,7 +6,7 @@ import { FetchPosts } from '../../redux/actions/posts';
 import { socket } from '../../redux/store';
 import { GET_POSTS_ERROR, GET_POSTS_SUCCESS } from '../../redux/types/posts';
 import { State } from '../../redux/types/state';
-import Post from '../../components/posts/Post';
+import PostThumbnail from '../../components/posts/PostThumbnail';
 import { FetchProfile } from '../../redux/actions/users';
 import { GET_PROFILE_ERROR, GET_PROFILE_SUCCESS } from '../../redux/types/users';
 import { ProfileHeader } from '../../components/profile/ProfileHeader';
@@ -66,17 +66,15 @@ export default function Profile (props: any, data: any) {
       }}/>
       {
        !postState.loading && postState.posts && postState.posts.length > 0 ? <FlatList
-        data={postState.posts}
-        keyExtractor={item => item.sortKey}
-        renderItem={({ item }) => (
-          <Post post={item}/>
-        )}
-        numColumns={3}
-        refreshControl={<RefreshControl tintColor='#FFDD00'  refreshing={postState.loading} onRefresh={onRefresh} />}
-        contentContainerStyle={styles.postContainer}
-      /> : postState.loading  ? <ActivityIndicator size="large" color="#FFDD00" /> : <View><Text style={{ color: '#fff' }}>No Posts</Text></View>
-                        
-
+          data={postState.posts}
+          keyExtractor={item => item.sortKey}
+          renderItem={({ item }) => (
+            <PostThumbnail post={item}/>
+          )}
+          numColumns={3}
+          refreshControl={<RefreshControl tintColor='#FFDD00'  refreshing={postState.loading} onRefresh={onRefresh} />}
+          contentContainerStyle={styles.postContainer}
+        /> : postState.loading  ? <ActivityIndicator size="large" color="#FFDD00" /> : <View><Text style={{ color: '#fff' }}>No Posts</Text></View>
       }
       
     </View>
