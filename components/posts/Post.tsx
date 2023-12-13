@@ -6,12 +6,14 @@ import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { FetchPost } from "../../redux/actions/posts";
 import { State } from "../../redux/types/state";
 
-export default function Post ({ postId }: { postId: string }) {
+export default function Post (props: any) {
+    const { postId } = props
+    console.log({props})
     const dispatch: ThunkDispatch<any, any, any> = useAppDispatch();
 
     const { loading, othersPosts } = useAppSelector((state: State) => state.postsState)
 
-    const { post, profile } = othersPosts.find((record) => record.post.sortKey === `POST#${postId}`) ?? {}
+    const { post, profile } = othersPosts.find((record: any) => record.post.sortKey === `POST#${postId}`) ?? {}
 
     useEffect(() => {
         if(!loading && !post && !profile) dispatch(FetchPost(postId))

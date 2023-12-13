@@ -3,7 +3,7 @@ import { PostsState } from "../types/state";
 
 const initialState = {
     loading: false,
-    posts: [],
+    posts: {},
     othersPosts: [],
     error: null,
 }
@@ -17,10 +17,12 @@ const posts = (state: PostsState = initialState, action: any) => {
             }
         }
         case GET_POSTS_SUCCESS: {
+            let userId = action.payload[0].id;
+            if(action.userId === userId) userId = 'mine';
             return {
                 ...state,
                 loading: false,
-                posts: action.payload,
+                posts: { ...state.posts, [userId]: action.payload },
             }
         }
         case GET_POSTS_ERROR: {
@@ -37,6 +39,8 @@ const posts = (state: PostsState = initialState, action: any) => {
             }
         }
         case GET_POST_SUCCESS: {
+            const userId = action.payload.id;
+            const existingPosts = state.posts[userId] || [];
             return {
                 ...state,
                 loading: false,

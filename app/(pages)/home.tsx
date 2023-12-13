@@ -26,7 +26,7 @@ export default function Home (props: any, data: any) {
         data={feed}
         keyExtractor={(item) => item}
         renderItem={({item}) => <Post postId={item} />}
-        initialNumToRender={2}
+        pagingEnabled
       />
     </View>
 

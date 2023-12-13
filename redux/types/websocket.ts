@@ -1,5 +1,5 @@
 import { CREATE_POST_ERROR, CREATE_POST_SUCCESS, GET_POSTS_ERROR, GET_POSTS_SUCCESS, GET_POST_ERROR, GET_POST_SUCCESS } from "./posts";
-import { GET_FEED_ERROR, GET_FEED_SUCCESS, GET_PROFILE_ERROR, GET_PROFILE_SUCCESS } from "./users";
+import { GET_FEED_ERROR, GET_FEED_SUCCESS, GET_PROFILE_ERROR, GET_PROFILE_SUCCESS, SEARCH_USERS_ERROR, SEARCH_USERS_SUCCESS } from "./users";
 
 export enum ActionTypes {
     CONNECTED = 'CONNECTED',
@@ -18,4 +18,7 @@ export enum ActionTypes {
 
     'get_post_success' = GET_POST_SUCCESS,
     'get_post_error' = GET_POST_ERROR,
+
+    'search_for_user_success' = SEARCH_USERS_SUCCESS,
+    'search_for_user_error' = SEARCH_USERS_ERROR,
 }
