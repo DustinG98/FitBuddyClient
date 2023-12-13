@@ -1,7 +1,6 @@
 import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native"
 
 export const ProfileHeader = ({profile, isMyProfile }: {isMyProfile: boolean, profile: { isFollowing: boolean, preferredUserName:string , followers: number, following: number }}) => {
-    console.log(profile)
     return (
         <View style={styles.profileContainer}>
             <View style={styles.profileNameContainer}>

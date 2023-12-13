@@ -35,7 +35,6 @@ const posts = (state: UsersState = initialState, action: any) => {
             }
         }
         case GET_PROFILE_SUCCESS: {
-            console.log('GET_PROFILE_SUCCESS', action.payload)
             if(action.payload.userId === action.userId) { 
                 return {
                     ...state,

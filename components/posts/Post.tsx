@@ -8,7 +8,6 @@ import { State } from "../../redux/types/state";
 
 export default function Post (props: any) {
     const { postId } = props
-    console.log({props})
     const dispatch: ThunkDispatch<any, any, any> = useAppDispatch();
 
     const { loading, othersPosts } = useAppSelector((state: State) => state.postsState)

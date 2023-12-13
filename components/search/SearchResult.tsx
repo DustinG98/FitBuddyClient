@@ -2,7 +2,6 @@ import { Link } from 'expo-router';
 import { View, Image, Text, StyleSheet, Dimensions } from 'react-native';
 
 export const SearchResult = ({searchResult}: {searchResult: any}) => {
-    console.log(searchResult)
     return (
         <Link  style={styles.searchResultCont} href={`/profile/${searchResult.userId}`}>
             <View style={styles.searchResultCont}>

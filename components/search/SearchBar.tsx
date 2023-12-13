@@ -15,7 +15,6 @@ export const SearchBar = () => {
 
     useEffect(() => {
         const timer = setTimeout(() => {
-            console.log(searchState.search)
             if(searchState.search.length > 0 && !searchLoading) dispatch(SearchForUser(searchState.search))
         }, 500)
 
