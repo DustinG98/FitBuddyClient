@@ -1,60 +1,24 @@
-import { ActivityIndicator, Dimensions, FlatList, Image, RefreshControl, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, Dimensions, FlatList, RefreshControl, StyleSheet, Text, View } from 'react-native';
 import { useEffect } from 'react';
 import { ThunkDispatch } from '@reduxjs/toolkit';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { FetchPosts } from '../../redux/actions/posts';
-import { socket } from '../../redux/store';
-import { GET_POSTS_ERROR, GET_POSTS_SUCCESS } from '../../redux/types/posts';
 import { State } from '../../redux/types/state';
-import Post from '../../components/posts/Post';
+import PostThumbnail from '../../components/posts/PostThumbnail';
 import { FetchProfile } from '../../redux/actions/users';
-import { GET_PROFILE_ERROR, GET_PROFILE_SUCCESS } from '../../redux/types/users';
 import { ProfileHeader } from '../../components/profile/ProfileHeader';
 import { Stack } from 'expo-router';
 
-export default function Profile (props: any, data: any) {
+export default function Profile () {
   const dispatch: ThunkDispatch<any, any, any> = useAppDispatch();
 
-  const postState = useAppSelector((state: State) => state.postsState)
-  const usersState = useAppSelector((state: State) => state.usersState)
-
-  const handleGetPostSuccess = (data: any) => {
-    dispatch({ type: GET_POSTS_SUCCESS, payload: data })
-  }
-
-  const handleGetPostError = (data: any) => {
-    dispatch({ type: GET_POSTS_ERROR, payload: data })
-  }
-
-  const handleGetProfileSuccess = (data: any) => {
-    dispatch({ type: GET_PROFILE_SUCCESS, payload: data })
-  }
-
-  const handleGetProfileError = (data: any) => {
-    dispatch({ type: GET_PROFILE_ERROR, payload: data })
-  }
+  const { loading: postLoading, posts } = useAppSelector((state: State) => state.postsState)
+  const { profile, profileLoading } = useAppSelector((state: State) => state.usersState)
 
   useEffect(() => {
-    socket.subscribe('get_posts_by_id_success', handleGetPostSuccess)
-  
-    socket.subscribe('get_posts_by_id_error', handleGetPostError)
-
-    socket.subscribe('get_profile_success', handleGetProfileSuccess)
-
-    socket.subscribe('get_profile_error', handleGetProfileError)
-    
-
-    if(!postState.posts || !postState.posts.length) dispatch(FetchPosts('1'))
-
-    if(!usersState.profile || !usersState.profile.id) dispatch(FetchProfile())
-
-    return () => {
-      socket.unsubscribe('get_posts_by_id_success', handleGetPostSuccess)
-      socket.unsubscribe('get_posts_by_id_error', handleGetPostError)
-      socket.unsubscribe('get_profile_success', handleGetProfileSuccess)
-      socket.unsubscribe('get_profile_error',  handleGetProfileError)
-    }
-  }, [])
+    if(!profileLoading && !profile) dispatch(FetchProfile())
+    if(!postLoading && !posts || posts.length === 0) dispatch(FetchPosts('1'))
+  }, [profile, posts])
 
   function onRefresh() {
     dispatch(FetchPosts('1'))
@@ -62,21 +26,19 @@ export default function Profile (props: any, data: any) {
   return (
     <View style={styles.profileContainer}>
       <Stack.Screen  options={{
-        header: () => (usersState.profile && <ProfileHeader profile={usersState.profile}/>)
+        header: () => (profile && <ProfileHeader profile={profile}/>)
       }}/>
       {
-       !postState.loading && postState.posts && postState.posts.length > 0 ? <FlatList
-        data={postState.posts}
-        keyExtractor={item => item.sortKey}
-        renderItem={({ item }) => (
-          <Post post={item}/>
-        )}
-        numColumns={3}
-        refreshControl={<RefreshControl tintColor='#FFDD00'  refreshing={postState.loading} onRefresh={onRefresh} />}
-        contentContainerStyle={styles.postContainer}
-      /> : postState.loading  ? <ActivityIndicator size="large" color="#FFDD00" /> : <View><Text style={{ color: '#fff' }}>No Posts</Text></View>
-                        
-
+       !postLoading && posts && posts.length > 0 ? <FlatList
+          data={posts}
+          keyExtractor={item => item.sortKey}
+          renderItem={({ item }) => (
+            <PostThumbnail post={item}/>
+          )}
+          numColumns={3}
+          refreshControl={<RefreshControl tintColor='#FFDD00'  refreshing={postLoading} onRefresh={onRefresh} />}
+          contentContainerStyle={styles.postContainer}
+        /> : postLoading  ? <ActivityIndicator size="large" color="#FFDD00" /> : <View><Text style={{ color: '#fff' }}>No Posts</Text></View>
       }
       
     </View>

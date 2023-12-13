@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
-import { Link, usePathname } from 'expo-router'
+import { usePathname } from 'expo-router'
 import { AuthService } from '../services/AuthService';
 import { TextInput } from 'react-native';
 import { TouchableOpacity } from 'react-native';

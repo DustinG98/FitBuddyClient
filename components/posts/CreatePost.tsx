@@ -12,8 +12,6 @@ export function CreatePost({ socket, modalOpen, toggleModal, image }: { socket: 
 
     const [loading, setLoading] = useState(false);
 
-    const [imageUrl, setImageUrl] = useState('');
-
     function getS3Url() {
         return new Promise((resolve, reject) => {
             function handleGetS3UrlSuccess(data: any) {
@@ -34,8 +32,6 @@ export function CreatePost({ socket, modalOpen, toggleModal, image }: { socket: 
     }
 
     function createPost(description: string, image: string) {
-
-
         return new Promise((resolve, reject) => {
             function handleCreatePostSuccess(data: any) {
                 socket.unsubscribe('post_create_update_success', handleCreatePostSuccess)

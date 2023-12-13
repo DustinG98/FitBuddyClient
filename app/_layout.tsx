@@ -1,7 +1,5 @@
-import { Stack, usePathname } from 'expo-router'
+import { Stack } from 'expo-router'
 import { Provider } from 'react-redux'
-import NavBar from '../nav'
-import Divider from '../components/shared/Divider'
 import { store } from '../redux/store'
 
 export default function App() {

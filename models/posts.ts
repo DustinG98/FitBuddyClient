@@ -9,4 +9,5 @@ export interface PostRecord extends PostTable {
     content: string;
     image: string;
     likes: number;
+    comments: number;
 }
