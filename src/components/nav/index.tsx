@@ -2,7 +2,7 @@ import { Text, View, StyleSheet, TouchableOpacity } from 'react-native'
 import { Link, usePathname } from 'expo-router'
 import ChatBubble from '../../../assets/icons/ChatBubble'
 import HomeIcon from '../../../assets/icons/Home'
-import Divider from '../../../components/shared/Divider'
+import Divider from '../shared/Divider'
 import Calendar from '../../../assets/icons/Calendar'
 import Profile from '../../../assets/icons/Profile'
 import { AntDesign } from '@expo/vector-icons'; 
