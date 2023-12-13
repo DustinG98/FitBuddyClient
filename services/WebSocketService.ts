@@ -51,7 +51,6 @@ export class Socket {
     }
     
     private onMessage (event: any) {
-        console.log({event})
         if(typeof event.data === 'string') {
           const data = JSON.parse(event.data)
           const _event: keyof typeof ActionTypes = data.event

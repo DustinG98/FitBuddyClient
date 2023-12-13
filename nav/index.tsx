@@ -27,10 +27,10 @@ export default function NavBar ({ socket, toggleModal }: { socket: Socket, toggl
                         <Text style={path === '/home' ? styles.activeLinkText : styles.linkText}>Home</Text>
                     </View>
                 </Link>
-                <Link href='/schedule' style={styles.link}>
+                <Link href='/search' style={styles.link}>
                     <View style={styles.routeContainer}>
-                        <Calendar style={styles.icon} color={path === '/schedule' ? '#FFDD00' : '#fff'}/>
-                        <Text style={path === '/schedule' ? styles.activeLinkText : styles.linkText}>Schedule</Text> 
+                        <AntDesign name="search1" size={35} color={path === '/search' ? '#FFDD00' : '#fff'} />
+                        <Text style={path === '/search' ? styles.activeLinkText : styles.linkText}>Search</Text> 
                     </View>
                 </Link>
                 <TouchableOpacity style={styles.menuButton} onPress={() => toggleCreateMenu()}>

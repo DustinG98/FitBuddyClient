@@ -9,24 +9,28 @@ import { FetchProfile } from '../../redux/actions/users';
 import { ProfileHeader } from '../../components/profile/ProfileHeader';
 import { Stack } from 'expo-router';
 
-export default function Profile () {
+export default function Profile ({ userId }: { userId?: string }) {
   const dispatch: ThunkDispatch<any, any, any> = useAppDispatch();
 
-  const { loading: postLoading, posts } = useAppSelector((state: State) => state.postsState)
-  const { profile, profileLoading } = useAppSelector((state: State) => state.usersState)
+  const { loading: postLoading } = useAppSelector((state: State) => state.postsState)
+  const posts = useAppSelector((state: State) => state.postsState.posts[userId ?? 'mine'])
 
+  const { profile: _profile, profileLoading, profiles } = useAppSelector((state: State) => state.usersState)
+  const profile = userId ? profiles.find((record) => record.userId === userId) : _profile
+    
   useEffect(() => {
-    if(!profileLoading && !profile) dispatch(FetchProfile())
-    if(!postLoading && !posts || posts.length === 0) dispatch(FetchPosts('1'))
+    if(!profileLoading && !profile) dispatch(FetchProfile(userId))
+    if(!postLoading && !posts) dispatch(FetchPosts(userId ?? '1'))
   }, [profile, posts])
 
   function onRefresh() {
-    dispatch(FetchPosts('1'))
+    dispatch(FetchPosts(userId ?? '1'))
   }
+
   return (
     <View style={styles.profileContainer}>
       <Stack.Screen  options={{
-        header: () => (profile && <ProfileHeader profile={profile}/>)
+        header: () => (profile && <ProfileHeader isMyProfile={userId === undefined} profile={profile}/>)
       }}/>
       {
        !postLoading && posts && posts.length > 0 ? <FlatList

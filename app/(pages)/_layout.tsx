@@ -80,7 +80,7 @@ export default function App() {
                     headerBackButtonMenuEnabled: false,
                     headerBackVisible: false,
                 }}/>
-                <Stack.Screen name="schedule" options={{
+                <Stack.Screen name="search" options={{
                     headerBackButtonMenuEnabled: false,
                     headerBackVisible: false,
                 }} />

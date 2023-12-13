@@ -1,6 +1,6 @@
-import { View, Text, StyleSheet, Image } from "react-native"
+import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native"
 
-export const ProfileHeader = ({profile}: {profile: { preferredUserName:string , followers: number, following: number }}) => {
+export const ProfileHeader = ({profile, isMyProfile }: {isMyProfile: boolean, profile: { isFollowing: boolean, preferredUserName:string , followers: number, following: number }}) => {
     return (
         <View style={styles.profileContainer}>
             <View style={styles.profileNameContainer}>
@@ -17,12 +17,40 @@ export const ProfileHeader = ({profile}: {profile: { preferredUserName:string , 
                     <Text style={styles.infoText}>{profile.following}</Text>
                 </View>
             </View>
-           
+            <View style={styles.actionContainer}>
+               {
+                   isMyProfile ? <View>
+                    <TouchableOpacity style={styles.actionButton}>
+                        <Text style={styles.actionText}>Edit Profile</Text>
+                    </TouchableOpacity>
+                   </View> : <View>
+                    <TouchableOpacity style={styles.actionButton}>
+                        <Text style={styles.actionText}>{profile.isFollowing ? "Unfollow" : "Follow"}</Text>
+                    </TouchableOpacity>
+                   </View>
+               }
+            </View> 
       </View>
     )
 }
 
 const styles = StyleSheet.create({
+    actionButton: {
+        backgroundColor: '#FFDD00',
+        borderRadius: 16,
+        padding: 16,
+    },
+    actionText: {
+        color: '#212529',
+        fontWeight: 'bold',
+        fontSize: 16,
+    },
+    actionContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginTop: 32,
+    },
     profileContainer: {
         flexDirection: 'column',
         justifyContent: 'center',
