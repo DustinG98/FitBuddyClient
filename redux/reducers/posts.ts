@@ -39,8 +39,6 @@ const posts = (state: PostsState = initialState, action: any) => {
             }
         }
         case GET_POST_SUCCESS: {
-            const userId = action.payload.id;
-            const existingPosts = state.posts[userId] || [];
             return {
                 ...state,
                 loading: false,
