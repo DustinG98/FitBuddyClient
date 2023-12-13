@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { usePathname } from 'expo-router'
-import { AuthService } from '../services/AuthService';
+import { AuthService } from '../src/services/AuthService';
 import { TextInput } from 'react-native';
 import { TouchableOpacity } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';

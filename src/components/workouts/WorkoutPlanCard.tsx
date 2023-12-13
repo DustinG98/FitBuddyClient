@@ -1,5 +1,5 @@
 import { View, Text, Image } from "react-native"
-import { WorkoutPlanWorkout } from "../../models/workouts"
+import { WorkoutPlanWorkout } from "../../src/models/workouts"
 
 export default function WorkoutPlanCard ({ workout }: { workout: WorkoutPlanWorkout }) {
     return (

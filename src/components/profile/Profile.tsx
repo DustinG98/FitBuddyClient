@@ -4,9 +4,9 @@ import { ThunkDispatch } from '@reduxjs/toolkit';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { FetchPosts } from '../../redux/actions/posts';
 import { State } from '../../redux/types/state';
-import PostThumbnail from '../../components/posts/PostThumbnail';
+import PostThumbnail from '../posts/PostThumbnail';
 import { FetchProfile } from '../../redux/actions/users';
-import { ProfileHeader } from '../../components/profile/ProfileHeader';
+import { ProfileHeader } from './ProfileHeader';
 import { Stack } from 'expo-router';
 
 export default function Profile ({ userId }: { userId?: string }) {

@@ -1,10 +1,10 @@
 import { Dimensions, FlatList, StyleSheet, View } from 'react-native';
 import { useEffect } from 'react';
 import { ThunkDispatch } from '@reduxjs/toolkit';
-import { useAppDispatch, useAppSelector } from '../../redux/hooks';
-import { State } from '../../redux/types/state';
-import { FetchUserFeed } from '../../redux/actions/users';
-import Post from '../../components/posts/Post';
+import { useAppDispatch, useAppSelector } from '../../src/redux/hooks';
+import { State } from '../../src/redux/types/state';
+import { FetchUserFeed } from '../../src/redux/actions/users';
+import Post from '../../src/components/posts/Post';
 
 export default function Home (props: any, data: any) {
   const dispatch: ThunkDispatch<any, any, any> = useAppDispatch();

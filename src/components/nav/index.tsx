@@ -1,13 +1,13 @@
 import { Text, View, StyleSheet, TouchableOpacity } from 'react-native'
 import { Link, usePathname } from 'expo-router'
-import ChatBubble from '../assets/icons/ChatBubble'
-import HomeIcon from '../assets/icons/Home'
-import Divider from '../components/shared/Divider'
-import Calendar from '../assets/icons/Calendar'
-import Profile from '../assets/icons/Profile'
+import ChatBubble from '../../../assets/icons/ChatBubble'
+import HomeIcon from '../../../assets/icons/Home'
+import Divider from '../../../components/shared/Divider'
+import Calendar from '../../../assets/icons/Calendar'
+import Profile from '../../../assets/icons/Profile'
 import { AntDesign } from '@expo/vector-icons'; 
 import { useState } from 'react'
-import { Socket } from '../services/WebSocketService'
+import { Socket } from '../../services/WebSocketService'
 
 export default function NavBar ({ socket, toggleModal }: { socket: Socket, toggleModal: Function }) {
     const [createMenuVisible, setCreateMenuVisible] = useState(false)
