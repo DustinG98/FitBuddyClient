@@ -1,33 +1,20 @@
 import { View, Text, Image, StyleSheet, ActivityIndicator, ImageBackground, Dimensions, TouchableHighlight } from "react-native"
-import { WorkoutPlanWorkout } from "../../models/workouts"
-import { PostRecord } from "../../models/posts"
 import { AntDesign, MaterialIcons } from '@expo/vector-icons'; 
-import { useEffect, useState } from "react";
-import { Link, router, useNavigation, usePathname } from "expo-router";
+import { useEffect } from "react";
 import { ThunkDispatch } from "@reduxjs/toolkit";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { FetchPost } from "../../redux/actions/posts";
-import { GET_POST_ERROR, GET_POST_SUCCESS } from "../../redux/types/posts";
-import { socket } from "../../redux/store";
 import { State } from "../../redux/types/state";
-import { FetchProfile } from "../../redux/actions/users";
-import { GET_PROFILE_ERROR, GET_PROFILE_SUCCESS } from "../../redux/types/users";
 
 export default function Post ({ postId }: { postId: string }) {
     const dispatch: ThunkDispatch<any, any, any> = useAppDispatch();
 
-    const postsState = useAppSelector((state: State) => state.postsState)
+    const { loading, othersPosts } = useAppSelector((state: State) => state.postsState)
 
-    const [ _post, setPost ] = useState<PostRecord>()
-    const [ _profile, setProfile ] = useState<any>()
-
-    const { post, profile } = postsState.othersPosts.find((record) => record.post.sortKey === `POST#${postId}`) ?? {}
+    const { post, profile } = othersPosts.find((record) => record.post.sortKey === `POST#${postId}`) ?? {}
 
     useEffect(() => {
-        if(post) setPost(_post)
-        if(profile) setProfile(profile)
-
-        if(!postsState.loading && !post && !_post) dispatch(FetchPost(postId))
+        if(!loading && !post && !profile) dispatch(FetchPost(postId))
     }, [post, profile])
 
     const postComponent = () => {
@@ -64,7 +51,7 @@ export default function Post ({ postId }: { postId: string }) {
     return (
         <View style={styles.postContainer}>
             {
-                !postsState.loading ? postComponent() : <View style={styles.imagePlaceholder}>
+                !loading ? postComponent() : <View style={styles.imagePlaceholder}>
                         <ActivityIndicator size="small" color="#FFDD00" />
                     </View>
             }

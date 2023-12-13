@@ -1,35 +1,23 @@
-import { ActivityIndicator, Dimensions, FlatList, Image, RefreshControl, StyleSheet, Text, View } from 'react-native';
-import { useEffect, useState } from 'react';
+import { ActivityIndicator, Dimensions, FlatList, RefreshControl, StyleSheet, Text, View } from 'react-native';
+import { useEffect } from 'react';
 import { ThunkDispatch } from '@reduxjs/toolkit';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { FetchPosts } from '../../redux/actions/posts';
-import { socket } from '../../redux/store';
-import { GET_POSTS_ERROR, GET_POSTS_SUCCESS } from '../../redux/types/posts';
 import { State } from '../../redux/types/state';
 import PostThumbnail from '../../components/posts/PostThumbnail';
 import { FetchProfile } from '../../redux/actions/users';
-import { GET_MY_PROFILE_SUCCESS, GET_PROFILE_ERROR, GET_PROFILE_SUCCESS } from '../../redux/types/users';
 import { ProfileHeader } from '../../components/profile/ProfileHeader';
 import { Stack } from 'expo-router';
 
-export default function Profile (props: any, data: any) {
+export default function Profile () {
   const dispatch: ThunkDispatch<any, any, any> = useAppDispatch();
 
-  const postState = useAppSelector((state: State) => state.postsState)
-  const usersState = useAppSelector((state: State) => state.usersState)
-
-  const [ _posts, setPosts ] = useState<any[]>([])
-  const [ _profile, setProfile ] = useState<any>()
-
-  const profile = usersState.profile
-  const posts = postState.posts
+  const { loading: postLoading, posts } = useAppSelector((state: State) => state.postsState)
+  const { profile, profileLoading } = useAppSelector((state: State) => state.usersState)
 
   useEffect(() => {
-    if(profile) setProfile(_profile)
-    if(posts) setPosts(_posts)
-
-    if(!usersState.profileLoading && !profile) dispatch(FetchProfile())
-    if(!postState.loading && !posts || posts.length === 0) dispatch(FetchPosts('1'))
+    if(!profileLoading && !profile) dispatch(FetchProfile())
+    if(!postLoading && !posts || posts.length === 0) dispatch(FetchPosts('1'))
   }, [profile, posts])
 
   function onRefresh() {
@@ -38,19 +26,19 @@ export default function Profile (props: any, data: any) {
   return (
     <View style={styles.profileContainer}>
       <Stack.Screen  options={{
-        header: () => (usersState.profile && <ProfileHeader profile={usersState.profile}/>)
+        header: () => (profile && <ProfileHeader profile={profile}/>)
       }}/>
       {
-       !postState.loading && postState.posts && postState.posts.length > 0 ? <FlatList
-          data={postState.posts}
+       !postLoading && posts && posts.length > 0 ? <FlatList
+          data={posts}
           keyExtractor={item => item.sortKey}
           renderItem={({ item }) => (
             <PostThumbnail post={item}/>
           )}
           numColumns={3}
-          refreshControl={<RefreshControl tintColor='#FFDD00'  refreshing={postState.loading} onRefresh={onRefresh} />}
+          refreshControl={<RefreshControl tintColor='#FFDD00'  refreshing={postLoading} onRefresh={onRefresh} />}
           contentContainerStyle={styles.postContainer}
-        /> : postState.loading  ? <ActivityIndicator size="large" color="#FFDD00" /> : <View><Text style={{ color: '#fff' }}>No Posts</Text></View>
+        /> : postLoading  ? <ActivityIndicator size="large" color="#FFDD00" /> : <View><Text style={{ color: '#fff' }}>No Posts</Text></View>
       }
       
     </View>

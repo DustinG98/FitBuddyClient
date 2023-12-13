@@ -1,10 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Stack, usePathname } from 'expo-router'
 import NavBar from '../../nav'
-import Divider from '../../components/shared/Divider'
-import Profile from '../../assets/icons/Profile'
 import { StyleSheet } from 'react-native'
-import { TouchableHighlight } from 'react-native'
 import { TouchableOpacity } from 'react-native'
 import { Text } from 'react-native'
 import { AuthService } from '../../services/AuthService'
@@ -19,8 +16,6 @@ export default function App() {
     const onPressSignOut = () => {
         authService?.logout()
     }
-
-    const [connected, setConnected] = useState(false);
 
     const [createModalVisible, setCreateModalVisible] = useState(false);
 
