@@ -1,52 +1,78 @@
 import { UsersState } from "../types/state";
-import { GET_FEED_ERROR, GET_FEED_START, GET_FEED_SUCCESS, GET_PROFILE_ERROR, GET_PROFILE_START, GET_PROFILE_SUCCESS } from "../types/users";
+import { GET_FEED_ERROR, GET_FEED_START, GET_FEED_SUCCESS, GET_MY_PROFILE_SUCCESS, GET_PROFILE_ERROR, GET_PROFILE_START, GET_PROFILE_SUCCESS } from "../types/users";
+import { ActionTypes } from "../types/websocket";
 
-const initialState = {
-    loading: false,
+const initialState: UsersState = {
+    profileLoading: false,
+    feedLoading: false,
     profile: undefined,
+    connected: false,
+    profiles: [],
     feed: [],
     error: null,
 }
 
 const posts = (state: UsersState = initialState, action: any) => {
     switch(action.type) {
+        case ActionTypes.CONNECTED: {
+            return {
+                ...state,
+                connected: true,
+            }
+        }
+        case ActionTypes.DISCONNECTED: {
+            return {
+                ...state,
+                connected: false,
+            }
+        }
         case GET_PROFILE_START: {
             return {
                 ...state,
-                loading: true,
+                profileLoading: true,
             }
         }
         case GET_PROFILE_SUCCESS: {
-            return {
-                ...state,
-                loading: false,
-                profile: action.payload,
+            console.log('GET_PROFILE_SUCCESS', action.payload)
+            if(action.payload.userId === action.userId) { 
+                return {
+                    ...state,
+                    profileLoading: false,
+                    profile: action.payload,
+                }
+            } else {
+                return {
+                    ...state,
+                    profileLoading: false,
+                    profiles: [...state.profiles, action.payload],
+                }
             }
+
         }
         case GET_PROFILE_ERROR: {
             return {
                 ...state,
-                loading: false,
+                profileLoading: false,
                 error: action.payload,
             }
         }
         case GET_FEED_START: {
             return {
                 ...state,
-                loading: true,
+                feedLoading: true,
             }
         }
         case GET_FEED_SUCCESS: {
             return {
                 ...state,
-                loading: false,
+                feedLoading: false,
                 feed: [...state.feed, ...action.payload.posts],
             }
         }
         case GET_FEED_ERROR: {
             return {
                 ...state,
-                loading: false,
+                feedLoading: false,
                 error: action.payload,
             }
         }

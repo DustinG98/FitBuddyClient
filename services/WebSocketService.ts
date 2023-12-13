@@ -1,15 +1,23 @@
+import { Action, EnhancedStore } from "@reduxjs/toolkit"
+import { ActionTypes } from "../redux/types/websocket"
+import { getUserIdFromToken } from "../utils"
+
 export class Socket {
     _instance: WebSocket | undefined
     connected: boolean
-    IdToken: any
+    token: any
+
+    store: EnhancedStore
 
     subscriptions: {[id:string]: CallableFunction[]}
-    constructor() {
+    constructor(store: EnhancedStore<any, Action, any>) {
+        this.store = store
         this.subscriptions = {}
         this.connected = false
     }
 
     open(token: string) {
+      this.token = token;
       const url = process.env.EXPO_PUBLIC_WEBSOCKET_ADDRESS + '?token=' + token;
       this._instance = new WebSocket(url);
       this._instance.onopen = this.onOpen.bind(this)
@@ -33,23 +41,24 @@ export class Socket {
       this._instance?.close()
     }
     private onOpen() {
+      this.store.dispatch({ type: ActionTypes.CONNECTED })
       this.connected = true
     }
     
     private onClose() {
+      this.store.dispatch({ type: ActionTypes.DISCONNECTED })
       this.connected = false
     }
-
-    private notifySubscribers(event:string, data:any) {
-      if(this.subscriptions[event] && this.subscriptions[event].length > 0) {
-        this.subscriptions[event].forEach(it => it(data))
-      }
-    }
-
+    
     private onMessage (event: any) {
+        console.log({event})
         if(typeof event.data === 'string') {
           const data = JSON.parse(event.data)
-          this.notifySubscribers(data.event, data.data)
+          const _event: keyof typeof ActionTypes = data.event
+          const action = ActionTypes[_event]
+          if(!action) return
+          const userId = getUserIdFromToken(this.token)
+          this.store.dispatch({ type: action, payload: data.data, userId })
         }
     }
 }

@@ -1,5 +1,5 @@
 import { ActivityIndicator, Dimensions, FlatList, Image, RefreshControl, StyleSheet, Text, View } from 'react-native';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { ThunkDispatch } from '@reduxjs/toolkit';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { FetchPosts } from '../../redux/actions/posts';
@@ -8,7 +8,7 @@ import { GET_POSTS_ERROR, GET_POSTS_SUCCESS } from '../../redux/types/posts';
 import { State } from '../../redux/types/state';
 import PostThumbnail from '../../components/posts/PostThumbnail';
 import { FetchProfile } from '../../redux/actions/users';
-import { GET_PROFILE_ERROR, GET_PROFILE_SUCCESS } from '../../redux/types/users';
+import { GET_MY_PROFILE_SUCCESS, GET_PROFILE_ERROR, GET_PROFILE_SUCCESS } from '../../redux/types/users';
 import { ProfileHeader } from '../../components/profile/ProfileHeader';
 import { Stack } from 'expo-router';
 
@@ -18,43 +18,19 @@ export default function Profile (props: any, data: any) {
   const postState = useAppSelector((state: State) => state.postsState)
   const usersState = useAppSelector((state: State) => state.usersState)
 
-  const handleGetPostSuccess = (data: any) => {
-    dispatch({ type: GET_POSTS_SUCCESS, payload: data })
-  }
+  const [ _posts, setPosts ] = useState<any[]>([])
+  const [ _profile, setProfile ] = useState<any>()
 
-  const handleGetPostError = (data: any) => {
-    dispatch({ type: GET_POSTS_ERROR, payload: data })
-  }
-
-  const handleGetProfileSuccess = (data: any) => {
-    dispatch({ type: GET_PROFILE_SUCCESS, payload: data })
-  }
-
-  const handleGetProfileError = (data: any) => {
-    dispatch({ type: GET_PROFILE_ERROR, payload: data })
-  }
+  const profile = usersState.profile
+  const posts = postState.posts
 
   useEffect(() => {
-    socket.subscribe('get_posts_by_id_success', handleGetPostSuccess)
-  
-    socket.subscribe('get_posts_by_id_error', handleGetPostError)
+    if(profile) setProfile(_profile)
+    if(posts) setPosts(_posts)
 
-    socket.subscribe('get_profile_success', handleGetProfileSuccess)
-
-    socket.subscribe('get_profile_error', handleGetProfileError)
-    
-
-    if(!postState.posts || !postState.posts.length) dispatch(FetchPosts('1'))
-
-    if(!usersState.profile || !usersState.profile.id) dispatch(FetchProfile())
-
-    return () => {
-      socket.unsubscribe('get_posts_by_id_success', handleGetPostSuccess)
-      socket.unsubscribe('get_posts_by_id_error', handleGetPostError)
-      socket.unsubscribe('get_profile_success', handleGetProfileSuccess)
-      socket.unsubscribe('get_profile_error',  handleGetProfileError)
-    }
-  }, [])
+    if(!usersState.profileLoading && !profile) dispatch(FetchProfile())
+    if(!postState.loading && !posts || posts.length === 0) dispatch(FetchPosts('1'))
+  }, [profile, posts])
 
   function onRefresh() {
     dispatch(FetchPosts('1'))

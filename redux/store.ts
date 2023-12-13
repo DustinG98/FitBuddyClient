@@ -7,7 +7,7 @@ export const store = configureStore({
   reducer: reducers,
 });
 
-export const socket = new Socket()
+export const socket = new Socket(store)
 
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;

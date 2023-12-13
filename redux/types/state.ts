@@ -1,6 +1,9 @@
 export interface UsersState {
-    loading: boolean;
+    profileLoading: boolean;
+    feedLoading: boolean;
     profile: any;
+    connected: boolean;
+    profiles: any[];
     feed: any[];
     error: any;
 }

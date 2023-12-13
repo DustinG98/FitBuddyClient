@@ -14,33 +14,15 @@ export default function Home (props: any, data: any) {
   const postState = useAppSelector((state: State) => state.postsState)
   const usersState = useAppSelector((state: State) => state.usersState)
 
-  const handleGetFeedSuccess = (data: any) => {
-    dispatch({ type: GET_FEED_SUCCESS, payload: data })
-  }
-
-  const handleGetFeedError = (data: any) => {
-    dispatch({ type: GET_FEED_ERROR, payload: data })
-  }
-
   useEffect(() => {
-    console.log('connected', socket.connected)
-    if(!socket.connected) return
-    socket.subscribe('get_user_feed_success', handleGetFeedSuccess)
-  
-    socket.subscribe('get_user_feed_error', handleGetFeedError)
-    console.log({usersState})
-    if(!usersState.feed || usersState.feed.length === 0 && !usersState.loading) dispatch(FetchUserFeed())
-
-    return () => {
-      socket.unsubscribe('get_user_feed_success', handleGetFeedSuccess)
-      socket.unsubscribe('get_user_feed_error', handleGetFeedError)
-    }
-  }, [socket.connected])
+    if(usersState.connected && !usersState.feed || usersState.feed.length === 0) dispatch(FetchUserFeed())
+  }, [usersState.connected, usersState.feed])
+  console.log(usersState.feed)
   return (
     <View style={styles.homeContainer}>
       <FlatList
         contentContainerStyle={styles.postContainer}
-        contentOffset = {{x: 0, y: 20}}
+        contentOffset = {{x: 0, y: 10}}
         numColumns={1}
         decelerationRate={"fast"}
         snapToInterval={Dimensions.get("window").height * 0.8}

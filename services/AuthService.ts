@@ -1,5 +1,4 @@
 import * as SecureStore from 'expo-secure-store';
-import { Buffer } from "buffer";
 import { router } from 'expo-router';
 
 interface Token {
@@ -59,8 +58,6 @@ export class AuthService {
             },
             body: JSON.stringify({email, username, password})
         });
-
-        console.log({response})
 
         if (response.ok) {
             return await this.login(username, password, true);
