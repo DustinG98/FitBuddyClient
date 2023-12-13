@@ -1,5 +1,4 @@
 import { View, Text, Image, StyleSheet, ActivityIndicator, ImageBackground, Dimensions, TouchableHighlight } from "react-native"
-import { WorkoutPlanWorkout } from "../../models/workouts"
 import { PostRecord } from "../../models/posts"
 import { AntDesign } from '@expo/vector-icons'; 
 import { useEffect, useState } from "react";

@@ -1,6 +1,6 @@
 import { View, StyleSheet, TextInput } from 'react-native';
-import { SearchBar } from '../../components/search/SearchBar';
-import { SearchResults } from '../../components/search/SearchResults';
+import { SearchBar } from '../../src/components/search/SearchBar';
+import { SearchResults } from '../../src/components/search/SearchResults';
 
 // search bar with auto search after 500ms
 // show search results in a list with profile pictures and usernames

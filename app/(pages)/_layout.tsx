@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import { Stack, usePathname } from 'expo-router'
-import NavBar from '../../nav'
+import NavBar from '../../src/components/nav'
 import { StyleSheet } from 'react-native'
 import { TouchableOpacity } from 'react-native'
 import { Text } from 'react-native'
-import { AuthService } from '../../services/AuthService'
-import { socket } from '../../redux/store'
-import { CreatePost } from '../../components/posts/CreatePost'
+import { AuthService } from '../../src/services/AuthService'
+import { socket } from '../../src/redux/store'
+import { CreatePost } from '../../src/components/posts/CreatePost'
 import * as ImagePicker from 'expo-image-picker';
 
 export default function App() {
