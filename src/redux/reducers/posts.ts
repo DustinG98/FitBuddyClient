@@ -1,4 +1,4 @@
-import { GET_POSTS_ERROR, GET_POSTS_START, GET_POSTS_SUCCESS, GET_POST_ERROR, GET_POST_START, GET_POST_SUCCESS } from "../types/posts";
+import { GET_POSTS_ERROR, GET_POSTS_START, GET_POSTS_SUCCESS, GET_POST_ERROR, GET_POST_START, GET_POST_SUCCESS, LIKE_POST_SUCCESS, UNLIKE_POST_SUCCESS } from "../types/posts";
 import { PostsState } from "../types/state";
 
 const initialState = {

@@ -1,36 +1,62 @@
-import { View, Text, Image, StyleSheet, ActivityIndicator, ImageBackground, Dimensions, TouchableHighlight } from "react-native"
+import { View, Text, Image, StyleSheet, ActivityIndicator, ImageBackground, Dimensions, TouchableHighlight, TouchableOpacity } from "react-native"
 import { AntDesign, MaterialIcons } from '@expo/vector-icons'; 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { ThunkDispatch } from "@reduxjs/toolkit";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
-import { FetchPost } from "../../redux/actions/posts";
+import { FetchPost, LikePost, UnlikePost } from "../../redux/actions/posts";
 import { State } from "../../redux/types/state";
 
 export default function Post (props: any) {
     const { postId } = props
     const dispatch: ThunkDispatch<any, any, any> = useAppDispatch();
 
+
     const { loading, othersPosts } = useAppSelector((state: State) => state.postsState)
 
     const { post, profile } = othersPosts.find((record: any) => record.post.sortKey === `POST#${postId}`) ?? {}
 
+    const [isLiked, setIsLiked] = useState(post?.isLiked ?? false)
+    const [ likes, setLikes ] = useState(post?.likes ?? 0)
+
     useEffect(() => {
         if(!loading && !post && !profile) dispatch(FetchPost(postId))
+        setIsLiked(post?.isLiked ?? false)
+        setLikes(post?.likes ?? 0)
     }, [post, profile])
+
+
+    const likePost = () => {
+        setIsLiked(true)
+        setLikes(likes + 1)
+        dispatch(LikePost(postId))
+    }
+
+    const unlikePost = () => {
+        setIsLiked(false)
+        setLikes(likes - 1)
+        dispatch(UnlikePost(postId))
+    }
 
     const postComponent = () => {
         return (
             <TouchableHighlight>
                 <ImageBackground resizeMode="cover" source={{ uri: `${process.env.EXPO_PUBLIC_POST_BUCKET}/${post?.image}` }} style={styles.postImage} >
                     <View style={styles.actions}>
-                        <View style={styles.actionContainer}>
-                            <AntDesign name="hearto" size={36} color="#FFF" />
-                            <Text style={styles.likeText}>{post?.likes}</Text>
-                        </View>
-                        <View style={styles.actionContainer}>
-                            <MaterialIcons name="comment" size={36} color="#FFF" />
-                            <Text style={styles.likeText}>{post?.comments ?? 0}</Text>
-                        </View>
+                        <TouchableOpacity onPress={() => isLiked ? unlikePost() : likePost()}>
+                            <View style={styles.actionContainer}>
+                                {
+                                    isLiked ? <AntDesign style={styles.activeActionIcon} name="heart" size={36} color="#FFF" /> : <AntDesign style={styles.inactiveActionIcon} name="hearto" size={36} color="#FFF" />
+                                }
+                                
+                                <Text style={styles.likeText}>{likes}</Text>
+                            </View>
+                        </TouchableOpacity>
+                        <TouchableOpacity>
+                            <View style={styles.actionContainer}>
+                                <MaterialIcons style={styles.inactiveActionIcon} name="comment" size={36} color="#FFF" />
+                            </View>
+                        </TouchableOpacity>
+
                     </View>
                     <View style={styles.postContent}>
                         <View style={styles.postTextCont}>
@@ -127,15 +153,26 @@ const styles = StyleSheet.create({
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'space-between',
-        backgroundColor: 'rgba(0, 0, 0, 0.2)',
         alignItems: 'center',
         marginTop: '50%',
         width: 100,
         padding: '5%',
     },
+    activeActionIcon: {
+        color: '#FF0000',
+        shadowColor: '#000',
+        shadowOffset: { width: 2, height: 2 },
+        shadowOpacity: 0.8,
+    },
+    inactiveActionIcon: {
+        color: '#fff',
+        shadowColor: '#000',
+        shadowOffset: { width: 2, height: 2 },
+        shadowOpacity: 0.8,
+    },
     actionContainer: {
         display: 'flex',
-        flexDirection: 'row',
+        flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
         padding: '5%',

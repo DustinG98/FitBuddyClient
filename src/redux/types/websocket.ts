@@ -1,4 +1,4 @@
-import { CREATE_POST_ERROR, CREATE_POST_SUCCESS, GET_POSTS_ERROR, GET_POSTS_SUCCESS, GET_POST_ERROR, GET_POST_SUCCESS } from "./posts";
+import { CREATE_POST_ERROR, CREATE_POST_SUCCESS, GET_POSTS_ERROR, GET_POSTS_SUCCESS, GET_POST_ERROR, GET_POST_SUCCESS, LIKE_POST_ERROR, LIKE_POST_SUCCESS, UNLIKE_POST_ERROR, UNLIKE_POST_SUCCESS } from "./posts";
 import { GET_FEED_ERROR, GET_FEED_SUCCESS, GET_PROFILE_ERROR, GET_PROFILE_SUCCESS, SEARCH_USERS_ERROR, SEARCH_USERS_SUCCESS } from "./users";
 
 export enum ActionTypes {
@@ -21,4 +21,10 @@ export enum ActionTypes {
 
     'search_for_user_success' = SEARCH_USERS_SUCCESS,
     'search_for_user_error' = SEARCH_USERS_ERROR,
+
+    'like_post_success' = LIKE_POST_SUCCESS,
+    'like_post_error' = LIKE_POST_ERROR,
+
+    'unlike_post_success' = UNLIKE_POST_SUCCESS,
+    'unlike_post_error' = UNLIKE_POST_ERROR,
 }
