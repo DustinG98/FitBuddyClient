@@ -1,12 +1,13 @@
 import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native"
 import { Divider, HorizontalDivider } from "../shared/Divider"
 
-export const ProfileHeader = ({profile, isMyProfile }: {isMyProfile: boolean, profile: { isFollowing: boolean, preferredUserName:string , followers: number, following: number }}) => {
+export const ProfileHeader = ({profile, isMyProfile, followUnfollowUser }: {isMyProfile: boolean, profile: { isFollowing: boolean, preferredUserName:string , followers: number, following: number, userId: string }, followUnfollowUser: CallableFunction}) => {
     return (
         <View style={styles.profileContainer}>
             <View style={styles.profileNameContainer}>
                 <Image style={styles.profileImage} width={100} height={100} source={{uri: 'https://avatars.githubusercontent.com/u/25105821?v=4'}} />
                 <Text style={styles.profileName}>{profile.preferredUserName}</Text>
+                <Text style={styles.bioText}>New Mexico ☀️ | Problem Solver 🧠</Text>
             </View>
             <View style={styles.infoContainer}>
                 <View style={styles.infoBox}>
@@ -29,7 +30,7 @@ export const ProfileHeader = ({profile, isMyProfile }: {isMyProfile: boolean, pr
                         <Text style={styles.subActionText}>Logout</Text>
                     </TouchableOpacity>
                    </> : <>
-                    <TouchableOpacity style={styles.actionButton}>
+                    <TouchableOpacity style={styles.actionButton} onPress={() => { followUnfollowUser(profile.userId, profile.isFollowing) }}>
                         <Text style={styles.actionText}>{profile.isFollowing ? "Unfollow" : "Follow"}</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.subActionButton}>
@@ -43,6 +44,10 @@ export const ProfileHeader = ({profile, isMyProfile }: {isMyProfile: boolean, pr
 }
 
 const styles = StyleSheet.create({
+    bioText: {
+        color: '#fff',
+        fontSize: 16,
+    },
     subActionButton: {
         backgroundColor: '#212529',
         display: 'flex',

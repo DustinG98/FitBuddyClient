@@ -1,4 +1,4 @@
-import { Dimensions, FlatList, StyleSheet, View } from 'react-native';
+import { Dimensions, FlatList, StyleSheet, View, RefreshControl, ActivityIndicator } from 'react-native';
 import { useEffect } from 'react';
 import { ThunkDispatch } from '@reduxjs/toolkit';
 import { useAppDispatch, useAppSelector } from '../../src/redux/hooks';
@@ -10,14 +10,15 @@ export default function Home (props: any, data: any) {
   const dispatch: ThunkDispatch<any, any, any> = useAppDispatch();
 
   const postState = useAppSelector((state: State) => state.postsState)
-  const { connected, feed } = useAppSelector((state: State) => state.usersState)
+  const { connected, feed, feedLoading } = useAppSelector((state: State) => state.usersState)
 
   useEffect(() => {
     if(connected && !feed || feed.length === 0) dispatch(FetchUserFeed())
   }, [connected, feed])
   return (
     <View style={styles.homeContainer}>
-      <FlatList
+      {
+        feedLoading ? <ActivityIndicator size="large" color="#FFDD00" /> : <FlatList
         contentContainerStyle={styles.postContainer}
         contentOffset = {{x: 0, y: 10}}
         numColumns={1}
@@ -26,8 +27,11 @@ export default function Home (props: any, data: any) {
         data={feed}
         keyExtractor={(item) => item}
         renderItem={({item}) => <Post postId={item} />}
+        refreshControl={<RefreshControl tintColor='#FFDD00'  refreshing={postState.loading} onRefresh={() => dispatch(FetchUserFeed())}/>}
         pagingEnabled
       />
+      }
+
     </View>
 
   );

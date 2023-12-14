@@ -1,5 +1,5 @@
 import { UsersState } from "../types/state";
-import { GET_FEED_ERROR, GET_FEED_START, GET_FEED_SUCCESS, GET_MY_PROFILE_SUCCESS, GET_PROFILE_ERROR, GET_PROFILE_START, GET_PROFILE_SUCCESS, SEARCH_USERS_ERROR, SEARCH_USERS_START, SEARCH_USERS_SUCCESS } from "../types/users";
+import { FOLLOW_USER_ERROR, FOLLOW_USER_START, FOLLOW_USER_SUCCESS, GET_FEED_ERROR, GET_FEED_START, GET_FEED_SUCCESS, GET_MY_PROFILE_SUCCESS, GET_PROFILE_ERROR, GET_PROFILE_START, GET_PROFILE_SUCCESS, SEARCH_USERS_ERROR, SEARCH_USERS_START, SEARCH_USERS_SUCCESS, UNFOLLOW_USER_ERROR, UNFOLLOW_USER_SUCCESS } from "../types/users";
 import { ActionTypes } from "../types/websocket";
 
 const initialState: UsersState = {
@@ -64,10 +64,11 @@ const posts = (state: UsersState = initialState, action: any) => {
             }
         }
         case GET_FEED_SUCCESS: {
+            const newPosts = action.payload.posts.filter((post: any) => !state.feed.find((p: any) => p.postId === post.postId));
             return {
                 ...state,
                 feedLoading: false,
-                feed: [...state.feed, ...action.payload.posts],
+                feed: [...state.feed, ...newPosts],
             }
         }
         case GET_FEED_ERROR: {
@@ -95,6 +96,58 @@ const posts = (state: UsersState = initialState, action: any) => {
             return {
                 ...state,
                 searchLoading: false,
+                error: action.payload,
+            }
+        }
+        case FOLLOW_USER_SUCCESS: {
+            const newProfiles = [...state.profiles].map((profile: any) => {
+                if(profile.userId === action.payload.userId) {
+                    return {...profile, isFollowing: true, followers: profile.followers + 1};
+                }
+                return profile;
+            })
+            if(state.profile) {
+                const newProfile = {...state.profile, following: state.profile.following + 1};
+                return {
+                    ...state,
+                    profile: newProfile,
+                    profiles: newProfiles,
+                }
+            }
+            return {
+                ...state,
+                profiles: newProfiles,
+            }
+        }
+        case FOLLOW_USER_ERROR: {
+            return {
+                ...state,
+                error: action.payload,
+            }
+        }
+        case UNFOLLOW_USER_SUCCESS: {
+            const newProfiles = [...state.profiles].map((profile: any) => {
+                if(profile.userId === action.payload.userId) {
+                   return {...profile, isFollowing: false, followers: profile.followers - 1};
+                }
+                return profile;
+            })
+            if(state.profile) {
+                const newProfile = {...state.profile, following: state.profile.following - 1};
+                return {
+                    ...state,
+                    profile: newProfile,
+                    profiles: newProfiles,
+                }
+            }
+            return {
+                ...state,
+                profiles: newProfiles,
+            }
+        }
+        case UNFOLLOW_USER_ERROR: {
+            return {
+                ...state,
                 error: action.payload,
             }
         }

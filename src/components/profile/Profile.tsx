@@ -5,7 +5,7 @@ import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { FetchPosts } from '../../redux/actions/posts';
 import { State } from '../../redux/types/state';
 import PostThumbnail from '../posts/PostThumbnail';
-import { FetchProfile } from '../../redux/actions/users';
+import { FetchProfile, FollowUser, UnfollowUser } from '../../redux/actions/users';
 import { ProfileHeader } from './ProfileHeader';
 import { Stack } from 'expo-router';
 
@@ -27,10 +27,18 @@ export default function Profile ({ userId }: { userId?: string }) {
     dispatch(FetchPosts(userId ?? '1'))
   }
 
+  function followUnfollowUser(userId: string, isFollowing: boolean) {
+    if(!isFollowing) {
+      dispatch(FollowUser(userId))
+    } else {
+      dispatch(UnfollowUser(userId))
+    }
+  }
+
   return (
     <View style={styles.profileContainer}>
       <Stack.Screen  options={{
-        header: () => (profile && <ProfileHeader isMyProfile={userId === undefined} profile={profile}/>)
+        header: () => (profile && <ProfileHeader followUnfollowUser={followUnfollowUser} isMyProfile={userId === undefined} profile={profile}/>)
       }}/>
       {
        !postLoading && posts && posts.length > 0 ? <FlatList
