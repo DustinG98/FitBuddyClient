@@ -22,7 +22,7 @@ export default function Post ({ post }: { post: PostRecord }) {
                 <ImageBackground onLoadEnd={() => setLoaded(true)} source={{ uri: `${process.env.EXPO_PUBLIC_POST_BUCKET}/${post.image}` }} style={styles.postImage} >
                     <View style={styles.postContent}>
                         <View style={styles.actionContainer}>
-                            <AntDesign name="hearto" size={24} color="#FFDD00" />
+                            <AntDesign name="heart" size={24} color="#FFDD00" />
                             <Text style={styles.likeText}>{post.likes}</Text>
                         </View>
                     </View>
@@ -83,7 +83,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'flex-end',
         alignItems: 'center',
-        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        backgroundColor: 'rgba(0, 0, 0, 0.4)',
     },
     actionContainer: {
         display: 'flex',
