@@ -1,4 +1,5 @@
 import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native"
+import { Divider, HorizontalDivider } from "../shared/Divider"
 
 export const ProfileHeader = ({profile, isMyProfile }: {isMyProfile: boolean, profile: { isFollowing: boolean, preferredUserName:string , followers: number, following: number }}) => {
     return (
@@ -9,25 +10,32 @@ export const ProfileHeader = ({profile, isMyProfile }: {isMyProfile: boolean, pr
             </View>
             <View style={styles.infoContainer}>
                 <View style={styles.infoBox}>
-                    <Text style={styles.infoHeader}>Followers:</Text>
                     <Text style={styles.infoText}>{profile.followers}</Text>
+                    <Text style={styles.infoHeader}>Followers</Text>
                 </View>
+                <HorizontalDivider color="#fff" />
                 <View style={styles.infoBox}>
-                    <Text style={styles.infoHeader}>Following:</Text>
                     <Text style={styles.infoText}>{profile.following}</Text>
+                    <Text style={styles.infoHeader}>Following</Text>
                 </View>
             </View>
             <View style={styles.actionContainer}>
-               {
-                   isMyProfile ? <View>
+                {
+                   isMyProfile ? <>
                     <TouchableOpacity style={styles.actionButton}>
                         <Text style={styles.actionText}>Edit Profile</Text>
                     </TouchableOpacity>
-                   </View> : <View>
+                    <TouchableOpacity style={styles.subActionButton}>
+                        <Text style={styles.subActionText}>Logout</Text>
+                    </TouchableOpacity>
+                   </> : <>
                     <TouchableOpacity style={styles.actionButton}>
                         <Text style={styles.actionText}>{profile.isFollowing ? "Unfollow" : "Follow"}</Text>
                     </TouchableOpacity>
-                   </View>
+                    <TouchableOpacity style={styles.subActionButton}>
+                        <Text style={styles.subActionText}>Message</Text>
+                    </TouchableOpacity>
+                   </>
                }
             </View> 
       </View>
@@ -35,10 +43,38 @@ export const ProfileHeader = ({profile, isMyProfile }: {isMyProfile: boolean, pr
 }
 
 const styles = StyleSheet.create({
+    subActionButton: {
+        backgroundColor: '#212529',
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'center',
+        marginLeft: 16,
+        marginRight: 16,
+        borderRadius: 16,
+        paddingLeft: 12,
+        paddingRight: 12,
+        paddingTop: 8,
+        paddingBottom: 8,
+        borderWidth: 1,
+        borderColor: '#FFDD00',
+    },
     actionButton: {
         backgroundColor: '#FFDD00',
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'center',
+        marginLeft: 16,
+        marginRight: 16,
         borderRadius: 16,
-        padding: 16,
+        paddingLeft: 12,
+        paddingRight: 12,
+        paddingTop: 8,
+        paddingBottom: 8,
+    },
+    subActionText: {
+        color: '#FFDD00',
+        fontWeight: 'bold',
+        fontSize: 16,
     },
     actionText: {
         color: '#212529',
@@ -49,38 +85,35 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        marginTop: 32,
+        marginBottom: 12,
     },
     profileContainer: {
         flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
-        padding: 16,
         width: '100%',
         backgroundColor: '#212529',
         paddingTop: 64,
     },
     profileNameContainer: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
+        flexDirection: 'column',
+        justifyContent: 'center',
         alignItems: 'center',
     },
     profileImage: {
-        width: 50,
-        height: 50,
+        width: 100,
+        height: 100,
         borderRadius: 50,
-        marginRight: 16,
+        marginBottom: 16,
     },
     profileName: {
         color: '#fff',
         fontSize: 24,
-        fontWeight: 'bold',
     },
     infoContainer: {
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        marginTop: 32,
     },
     infoBox: {
         flexDirection: 'column',
