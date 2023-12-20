@@ -20,7 +20,7 @@ export default function Profile ({ userId }: { userId?: string }) {
     
   useEffect(() => {
     if(!profileLoading && !profile) dispatch(FetchProfile(userId))
-    if(!postLoading && !posts) dispatch(FetchPosts(userId ?? '1'))
+    if(!postLoading && !posts) dispatch(FetchPosts(userId))
   }, [profile, posts])
 
   function onRefresh() {
