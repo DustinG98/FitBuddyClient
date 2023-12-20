@@ -9,7 +9,7 @@ const initialState: UsersState = {
     profile: undefined,
     connected: false,
     profiles: [],
-    feed: [],
+    feed: undefined,
     searchResults: [],
     error: null,
 }
@@ -64,11 +64,11 @@ const posts = (state: UsersState = initialState, action: any) => {
             }
         }
         case GET_FEED_SUCCESS: {
-            const newPosts = action.payload.posts.filter((post: any) => !state.feed.find((p: any) => p.postId === post.postId));
+            const newPosts = action.payload?.posts.filter((post: any) => !state.feed?.find((p: any) => p.postId === post.postId)) || [];
             return {
                 ...state,
                 feedLoading: false,
-                feed: [...state.feed, ...newPosts],
+                feed: [...state.feed || [], ...newPosts],
             }
         }
         case GET_FEED_ERROR: {

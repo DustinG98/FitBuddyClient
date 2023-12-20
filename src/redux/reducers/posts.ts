@@ -17,7 +17,7 @@ const posts = (state: PostsState = initialState, action: any) => {
             }
         }
         case GET_POSTS_SUCCESS: {
-            let userId = action.payload[0].id;
+            let userId = action.payload[0]?.id;
             if(action.userId === userId) userId = 'mine';
             return {
                 ...state,

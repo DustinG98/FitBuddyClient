@@ -3,9 +3,9 @@ import { ThunkAction } from 'redux-thunk'
 import { socket } from '../store'
 import { GET_POSTS_START, GET_POST_START, LIKE_POST_START, UNLIKE_POST_START } from '../types/posts'
 
-export const FetchPosts = (userId: string): ThunkAction<void, any, unknown, Action<string>> => async (dispatch) => {
+export const FetchPosts = (userId?: string): ThunkAction<void, any, unknown, Action<string>> => async (dispatch) => {
     dispatch({ type: GET_POSTS_START })
-    socket.send('get_posts_by_user_id', { userId })
+    socket.send('get_posts_by_user_id', { userId, id: '123' })
 }
 
 export const FetchPost = (postId: string): ThunkAction<void, any, unknown, Action<string>> => async (dispatch) => {

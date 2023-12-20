@@ -6,7 +6,7 @@ export interface UsersState {
     connected: boolean;
     profiles: any[];
     searchResults: any[];
-    feed: any[];
+    feed?: any[];
     error: any;
 }
 
