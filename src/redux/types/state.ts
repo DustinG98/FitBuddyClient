@@ -1,3 +1,5 @@
+import { AiWorkoutOutput, AiWorkoutPlan } from "../../models/workouts";
+
 export interface UsersState {
     profileLoading: boolean;
     feedLoading: boolean;
@@ -17,7 +19,14 @@ export interface PostsState {
     error: any;
 }
 
+export interface WorkoutsState {
+    creationLoading: boolean;
+    creationError: any;
+    createdWorkoutPlan?: AiWorkoutOutput;
+}
+
 export interface State {
     postsState: PostsState;
     usersState: UsersState;
+    workoutsState: WorkoutsState;
 }

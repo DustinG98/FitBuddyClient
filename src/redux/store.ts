@@ -1,6 +1,7 @@
 import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
 import reducers from "./reducers";
 import { Socket } from '../services/WebSocketService';
+import { State } from './types/state';
 
 
 export const store = configureStore({
@@ -9,11 +10,10 @@ export const store = configureStore({
 
 export const socket = new Socket(store)
 
-export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
 export type AppThunk<ReturnType = void> = ThunkAction<
   ReturnType,
-  RootState,
+  State,
   unknown,
   Action<string>
 >;
