@@ -1,6 +1,8 @@
+import { router } from "expo-router";
 import { UsersState } from "../types/state";
-import { FOLLOW_USER_ERROR, FOLLOW_USER_START, FOLLOW_USER_SUCCESS, GET_FEED_ERROR, GET_FEED_START, GET_FEED_SUCCESS, GET_MY_PROFILE_SUCCESS, GET_PROFILE_ERROR, GET_PROFILE_START, GET_PROFILE_SUCCESS, SEARCH_USERS_ERROR, SEARCH_USERS_START, SEARCH_USERS_SUCCESS, UNFOLLOW_USER_ERROR, UNFOLLOW_USER_SUCCESS } from "../types/users";
+import { CLEAR_NOTIFICATION, FOLLOW_USER_ERROR, FOLLOW_USER_START, FOLLOW_USER_SUCCESS, GET_FEED_ERROR, GET_FEED_START, GET_FEED_SUCCESS, GET_MY_PROFILE_SUCCESS, GET_PROFILE_ERROR, GET_PROFILE_START, GET_PROFILE_SUCCESS, SEARCH_USERS_ERROR, SEARCH_USERS_START, SEARCH_USERS_SUCCESS, SHOW_NOTIFICATION, UNFOLLOW_USER_ERROR, UNFOLLOW_USER_SUCCESS } from "../types/users";
 import { ActionTypes } from "../types/websocket";
+import { CREATE_WORKOUT_PLAN_SUCCESS, FETCH_USERS_WORKOUT_PLANS_SUCCESS } from "../types/workouts";
 
 const initialState: UsersState = {
     profileLoading: false,
@@ -12,6 +14,7 @@ const initialState: UsersState = {
     feed: undefined,
     searchResults: [],
     error: null,
+    notification: undefined,
 }
 
 const posts = (state: UsersState = initialState, action: any) => {
@@ -140,8 +143,13 @@ const posts = (state: UsersState = initialState, action: any) => {
                     profiles: newProfiles,
                 }
             }
+            const notification = {
+                type: 'success',
+                message: 'Unfollowed user',
+            }
             return {
                 ...state,
+                notification,
                 profiles: newProfiles,
             }
         }
@@ -149,6 +157,30 @@ const posts = (state: UsersState = initialState, action: any) => {
             return {
                 ...state,
                 error: action.payload,
+            }
+        }
+        case SHOW_NOTIFICATION: {
+            return {
+                ...state,
+                notification: action.payload,
+            }
+        }
+        case CLEAR_NOTIFICATION: {
+            return {
+                ...state,
+                notification: undefined,
+            }
+        }
+        case CREATE_WORKOUT_PLAN_SUCCESS: {
+            const notification = {
+                type: 'success',
+                message: 'Successfully created workout plan',
+                actionName: 'View',
+                action: "route#" + action.payload.workoutPlanId,
+            }
+            return {
+                ...state,
+                notification,
             }
         }
         default:{

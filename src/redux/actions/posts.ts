@@ -1,7 +1,7 @@
 import { Action } from 'redux'
 import { ThunkAction } from 'redux-thunk'
 import { socket } from '../store'
-import { GET_POSTS_START, GET_POST_START, LIKE_POST_START, UNLIKE_POST_START } from '../types/posts'
+import { GET_POSTS_START, GET_POST_START, GET_S3_SIGNED_URL_START, LIKE_POST_START, UNLIKE_POST_START } from '../types/posts'
 
 export const FetchPosts = (userId?: string): ThunkAction<void, any, unknown, Action<string>> => async (dispatch) => {
     dispatch({ type: GET_POSTS_START })
@@ -21,4 +21,9 @@ export const LikePost = (postId: string): ThunkAction<void, any, unknown, Action
 export const UnlikePost = (postId: string): ThunkAction<void, any, unknown, Action<string>> => async (dispatch) => {
     dispatch({ type: UNLIKE_POST_START })
     socket.send('unlike_post', { postId })
+}
+
+export const GetS3SignedUrl = (imageType: string): ThunkAction<void, any, unknown, Action<string>> => async (dispatch) => {
+    dispatch({ type: GET_S3_SIGNED_URL_START })
+    socket.send('get_s3_url', { imageType })
 }

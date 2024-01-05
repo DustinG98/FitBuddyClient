@@ -9,6 +9,8 @@ import { socket } from '../../src/redux/store'
 import { CreatePost } from '../../src/components/posts/CreatePost'
 import * as ImagePicker from 'expo-image-picker';
 import { CreateWorkoutPlanModal } from '../../src/components/workouts/CreateWorkoutPlanModal'
+import WorkoutsPageHeader from '../../src/components/shared/BlankPageHeader'
+import BlankPageHeader from '../../src/components/shared/BlankPageHeader'
 
 export default function App() {
     const pathname = usePathname()
@@ -106,7 +108,12 @@ export default function App() {
                     headerBackButtonMenuEnabled: false,
                     headerBackVisible: false,
                 }} />
-                <Stack.Screen name="workout_editor" options={{
+                <Stack.Screen name="workouts" options={{
+                    headerBackButtonMenuEnabled: false,
+                    headerBackVisible: false,
+                    header: () => <BlankPageHeader/>,
+                }} />
+                <Stack.Screen name="workout" options={{
                     headerBackButtonMenuEnabled: false,
                     headerBackVisible: false,
                 }} />

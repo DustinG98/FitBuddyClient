@@ -6,6 +6,8 @@ import { State } from "../../redux/types/state";
 import { ThunkDispatch } from "@reduxjs/toolkit";
 import { CreateWorkoutPlan } from "../../redux/actions/workouts";
 import { router, useNavigation } from "expo-router";
+import { G } from "react-native-svg";
+import { ShowNotification } from "../../redux/actions/users";
 
 // inputs for creating a workout plan
 
@@ -22,7 +24,7 @@ import { router, useNavigation } from "expo-router";
 // }
 
 export function CreateWorkoutPlanModal({ modalOpen, toggleModal }: { modalOpen: boolean, toggleModal: () => void}) {
-    const { createdWorkoutPlan = undefined, creationLoading } = useAppSelector((state:State) => {
+    const { createdWorkoutPlanId = undefined, creationLoading } = useAppSelector((state:State) => {
         return state.workoutsState
     })
     const dispatch: ThunkDispatch<any, any, any> = useAppDispatch();
@@ -55,6 +57,8 @@ export function CreateWorkoutPlanModal({ modalOpen, toggleModal }: { modalOpen: 
         }
 
         dispatch(CreateWorkoutPlan(workoutPlanInput))
+        dispatch(ShowNotification({ message: 'Workout Plan Queued...', type: 'success'  }))
+        toggleModal();
     }
 
     function NumOfWorkoutsPerDay(max: number) {
@@ -192,8 +196,8 @@ export function CreateWorkoutPlanModal({ modalOpen, toggleModal }: { modalOpen: 
         )
     }
 
-    function GoToEditor () {
-        router.replace('/workout_editor')
+    function GoHome () {
+        router.replace('/home')
         return null
     }
 
@@ -206,10 +210,10 @@ export function CreateWorkoutPlanModal({ modalOpen, toggleModal }: { modalOpen: 
     }, [workoutTypesEnjoyed])
 
     useEffect(() => {
-        if(createdWorkoutPlan) {
+        if(createdWorkoutPlanId) {
             toggleModal();
         }
-    }, [createdWorkoutPlan]);
+    }, [createdWorkoutPlanId]);
 
     useEffect(() => { 
         if(modalOpen) {
@@ -227,7 +231,7 @@ export function CreateWorkoutPlanModal({ modalOpen, toggleModal }: { modalOpen: 
     }, [modalOpen]);
 
     return (
-        modalOpen && !createdWorkoutPlan ?
+        modalOpen && !createdWorkoutPlanId ?
         <Modal
             style={{flex: 1}}
             presentationStyle="fullScreen"
@@ -240,82 +244,78 @@ export function CreateWorkoutPlanModal({ modalOpen, toggleModal }: { modalOpen: 
                         <Text style={styles.modalHeaderText}>Cancel</Text>
                     </TouchableHighlight>
                 </View>
-            {
-                creationLoading ? <View style={{height: '100%', width: '100%', display: 'flex', flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-                        <ActivityIndicator size="large" color="#FFDD00" />
-                    </View> : (
-                        <ScrollView contentContainerStyle={{flexGrow: 1}}>
-                            <View style={styles.inputContainer}>
-                                <Text style={styles.inputText}>
-                                    What is your current weight?
-                                </Text>
-                                <TextInput
-                                    style={styles.input}
-                                    placeholder="Weight (lbs/kg)"
-                                    onChangeText={text => {
-                                        setCurrentWeight(text)
-                                    }}
-                                    value={currentWeight}
-                                    placeholderTextColor="#a8a8a8"
-                                />
-                            </View>
-                            <View style={styles.inputContainer}>
-                                <Text style={styles.inputText}>
-                                    What is your height?
-                                </Text>
-                                <TextInput
-                                    style={styles.input}
-                                    placeholder={`5'6"`}
-                                    onChangeText={text => {
-                                        setHeight(text)
-                                    }}
-                                    value={height}
-                                    placeholderTextColor="#a8a8a8"
-                                />
-                            </View>
+                {
+                    <ScrollView contentContainerStyle={{flexGrow: 1}}>
+                        <View style={styles.inputContainer}>
+                            <Text style={styles.inputText}>
+                                What is your current weight?
+                            </Text>
+                            <TextInput
+                                style={styles.input}
+                                placeholder="Weight (lbs/kg)"
+                                onChangeText={text => {
+                                    setCurrentWeight(text)
+                                }}
+                                value={currentWeight}
+                                placeholderTextColor="#a8a8a8"
+                            />
+                        </View>
+                        <View style={styles.inputContainer}>
+                            <Text style={styles.inputText}>
+                                What is your height?
+                            </Text>
+                            <TextInput
+                                style={styles.input}
+                                placeholder={`5'6"`}
+                                onChangeText={text => {
+                                    setHeight(text)
+                                }}
+                                value={height}
+                                placeholderTextColor="#a8a8a8"
+                            />
+                        </View>
 
-                                {
-                                    NumDaysToWorkout(7)
-                                }
-                                {
-                                    NumOfWorkoutsPerDay(5)
-                                }
-                                {
-                                    FitnessLevelButtons()
-                                }
-                                <View style={styles.inputContainer}>
-                                    <Text style={styles.inputText}>
-                                        How many hours do you have to workout daily?
-                                    </Text>
-                                    <TextInput
-                                        style={styles.input}
-                                        placeholder="1 - 6 hours"
-                                        onChangeText={text => {
-                                            setTimeToWorkoutDaily(text)
-                                        }}
-                                        value={timeToWorkoutDaily}
-                                        placeholderTextColor="#a8a8a8"
-                                    />
-                                </View>
-                                {
-                                    FitnessGoalsButtons()
-                                }
-                                {
-                                    WorkoutTypesButtons()
-                                }
-                                {
-                                    EquipmentAccessButtons()
-                                }
-                                {
-                                    <TouchableHighlight style={styles.submitButton} onPress={() => createWorkoutPlan()}>
-                                        <Text style={styles.submitButtonText}>Create Personalized Workout Plan</Text>
-                                    </TouchableHighlight>
-                                }
-                        </ScrollView>
-                )
-            }
+                            {
+                                NumDaysToWorkout(7)
+                            }
+                            {
+                                NumOfWorkoutsPerDay(5)
+                            }
+                            {
+                                FitnessLevelButtons()
+                            }
+                            <View style={styles.inputContainer}>
+                                <Text style={styles.inputText}>
+                                    How many hours do you have to workout daily?
+                                </Text>
+                                <TextInput
+                                    style={styles.input}
+                                    placeholder="1 - 6 hours"
+                                    onChangeText={text => {
+                                        setTimeToWorkoutDaily(text)
+                                    }}
+                                    value={timeToWorkoutDaily}
+                                    placeholderTextColor="#a8a8a8"
+                                />
+                            </View>
+                            {
+                                FitnessGoalsButtons()
+                            }
+                            {
+                                WorkoutTypesButtons()
+                            }
+                            {
+                                EquipmentAccessButtons()
+                            }
+                            {
+                                <TouchableHighlight style={styles.submitButton} onPress={() => createWorkoutPlan()}>
+                                    <Text style={styles.submitButtonText}>Create Personalized Workout Plan</Text>
+                                </TouchableHighlight>
+                            }
+                    </ScrollView>
+                }
             </SafeAreaView>
-        </Modal> : createdWorkoutPlan ? GoToEditor() : null
+        </Modal> : null
     )
 }
 

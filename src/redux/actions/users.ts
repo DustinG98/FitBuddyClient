@@ -1,7 +1,8 @@
 import { Action } from 'redux'
 import { ThunkAction } from 'redux-thunk'
 import { socket } from '../store'
-import { FOLLOW_USER_START, GET_FEED_START, GET_PROFILE_START, SEARCH_USERS_START, UNFOLLOW_USER_START } from '../types/users'
+import { CLEAR_NOTIFICATION, FOLLOW_USER_START, GET_FEED_START, GET_PROFILE_START, SEARCH_USERS_START, SHOW_NOTIFICATION, UNFOLLOW_USER_START } from '../types/users'
+import { UserNotification } from '../types/state'
 
 export const FetchProfile = (userId?: string): ThunkAction<void, any, unknown, Action<string>> => async (dispatch) => {
     dispatch({ type: GET_PROFILE_START })
@@ -28,3 +29,12 @@ export const UnfollowUser = (userId: string): ThunkAction<void, any, unknown, Ac
     dispatch({ type: UNFOLLOW_USER_START })
     socket.send('unfollow_user', { userId })
 }
+
+export const ClearNotification = (): ThunkAction<void, any, unknown, Action<string>> => async (dispatch) => {
+    dispatch({ type: CLEAR_NOTIFICATION })
+}
+
+export const ShowNotification = (notification: UserNotification): ThunkAction<void, any, unknown, Action<string>> => async (dispatch) => {
+    dispatch({ type: CLEAR_NOTIFICATION })
+    dispatch({ type: SHOW_NOTIFICATION, payload: notification })
+}    

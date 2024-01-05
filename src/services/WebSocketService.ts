@@ -54,10 +54,12 @@ export class Socket {
         if(typeof event.data === 'string') {
           const data = JSON.parse(event.data)
           const _event: keyof typeof ActionTypes = data.event
+
+          console.log('event', _event)
+
           const action = ActionTypes[_event]
           if(!action) return
 
-          console.log('received', action, data)
           const userId = getUserIdFromToken(this.token)
           this.store.dispatch({ type: action, payload: data.data, userId })
         }
