@@ -5,7 +5,7 @@ import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { FetchPosts } from '../../redux/actions/posts';
 import { State } from '../../redux/types/state';
 import PostThumbnail from '../posts/PostThumbnail';
-import { FetchProfile, FollowUser, UnfollowUser } from '../../redux/actions/users';
+import { FetchProfile, FollowUser, ShowNotification, UnfollowUser } from '../../redux/actions/users';
 import { ProfileHeader } from './ProfileHeader';
 import { Stack } from 'expo-router';
 
@@ -25,6 +25,7 @@ export default function Profile ({ userId }: { userId?: string }) {
 
   function onRefresh() {
     dispatch(FetchPosts(userId ?? '1'))
+    dispatch(ShowNotification({ message: 'Posts Refreshed', type: 'success'  }))
   }
 
   function followUnfollowUser(userId: string, isFollowing: boolean) {

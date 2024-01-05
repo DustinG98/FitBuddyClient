@@ -1,13 +1,16 @@
 import React, { useEffect, useState } from 'react'
 import { Stack, usePathname } from 'expo-router'
 import NavBar from '../../src/components/nav'
-import { StyleSheet } from 'react-native'
+import { Modal, StyleSheet, Touchable, TouchableHighlight, TouchableWithoutFeedback, View } from 'react-native'
 import { TouchableOpacity } from 'react-native'
 import { Text } from 'react-native'
 import { AuthService } from '../../src/services/AuthService'
 import { socket } from '../../src/redux/store'
 import { CreatePost } from '../../src/components/posts/CreatePost'
 import * as ImagePicker from 'expo-image-picker';
+import { CreateWorkoutPlanModal } from '../../src/components/workouts/CreateWorkoutPlanModal'
+import WorkoutsPageHeader from '../../src/components/shared/BlankPageHeader'
+import BlankPageHeader from '../../src/components/shared/BlankPageHeader'
 
 export default function App() {
     const pathname = usePathname()
@@ -18,6 +21,9 @@ export default function App() {
     }
 
     const [createModalVisible, setCreateModalVisible] = useState(false);
+    const [ createWorkoutPlanModalVisible, setCreateWorkoutPlanModalVisible ] = useState(false)
+
+    const [ createMenuVisible, setCreateMenuVisible ] = useState(false)
 
 
     useEffect(() => {
@@ -48,7 +54,17 @@ export default function App() {
     }
 
     const toggleModal = () => {
+        if(createMenuVisible) toggleCreateMenu()
         setCreateModalVisible(!createModalVisible);
+    }
+
+    const toggleCreateMenu = () => {
+        setCreateMenuVisible(!createMenuVisible)
+    }
+
+    const toggleWorkoutPlanModal = () => {
+        if(createMenuVisible) toggleCreateMenu()
+        setCreateWorkoutPlanModalVisible(!createWorkoutPlanModalVisible)
     }
 
     return (
@@ -91,19 +107,86 @@ export default function App() {
                 <Stack.Screen name="profile" options={{
                     headerBackButtonMenuEnabled: false,
                     headerBackVisible: false,
-                }} 
-                />
+                }} />
+                <Stack.Screen name="workouts" options={{
+                    headerBackButtonMenuEnabled: false,
+                    headerBackVisible: false,
+                    header: () => <BlankPageHeader/>,
+                }} />
+                <Stack.Screen name="workout" options={{
+                    headerBackButtonMenuEnabled: false,
+                    headerBackVisible: false,
+                }} />
 
             </Stack>
-            { socket ? <NavBar socket={socket} toggleModal={pickImage}/> : null }
+            {
+               <Modal
+                    animationType="slide"
+                    transparent={true}
+                    visible={createMenuVisible}
+                    onRequestClose={() => {
+                        toggleCreateMenu()
+                    }}
+               >
+                    <TouchableWithoutFeedback onPress={() => toggleCreateMenu()}>
+                        <View style={styles.createMenu}>
+                            <TouchableOpacity style={styles.createButton} onPress={() => toggleWorkoutPlanModal()}>
+                                <Text style={styles.createMenuText}>Create Workout Plan</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity style={styles.createButton} onPress={() => pickImage()}>
+                                <Text style={styles.createMenuText}>Create Post</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </TouchableWithoutFeedback>
+                </Modal>
+            }
+            { socket ? <NavBar socket={socket} toggleModal={toggleCreateMenu}/> : null }
+            
             {createModalVisible && socket ? 
                 <CreatePost socket={socket} modalOpen={createModalVisible} image={image} toggleModal={toggleModal} />
             : null}
+            {
+                createWorkoutPlanModalVisible && socket ?
+                <CreateWorkoutPlanModal modalOpen={createWorkoutPlanModalVisible} toggleModal={toggleWorkoutPlanModal}/>
+                : null
+            }
         </>
     )
 }
 
 const styles = StyleSheet.create({
+    createMenu: {
+        flex: 1,
+        flexDirection: 'column',
+        justifyContent: 'flex-end',
+        paddingBottom: 100,
+        alignItems: 'center',
+        backgroundColor: 'rgba(0, 0, 0, 0.0)',
+        zIndex: 999,
+    },
+    createButton: {
+        height: 40,
+        backgroundColor: '#FFDD00',
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginVertical: 10,
+        paddingHorizontal: 20,
+        borderRadius: 16,
+    },
+    cancelButton: {
+        height: 40,
+        backgroundColor: '#101214',
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginVertical: 10,
+        paddingHorizontal: 20,
+        borderRadius: 16,
+    },
+    createMenuText: {
+        color: '#000',
+        fontWeight: 'bold',
+        fontSize: 16,
+    },
     icon: {
         color: '#fff',
         width: 35,

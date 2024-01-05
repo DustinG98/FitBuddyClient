@@ -1,14 +1,15 @@
 import { useRef, useEffect, useCallback } from 'react';
 import { useWindowDimensions, Animated } from 'react-native';
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
-import { RootState, AppDispatch } from '../store';
+import { AppDispatch } from '../store';
 import { Socket } from '../../services/WebSocketService';
 import { AuthService } from '../../services/AuthService';
 import { usePathname } from 'expo-router';
+import { State } from '../types/state';
 
 // Use throughout your app instead of plain `useDispatch` and `useSelector`
 export const useAppDispatch = () => useDispatch<AppDispatch>();
-export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
+export const useAppSelector: TypedUseSelectorHook<State> = useSelector;
 
 export const useViewportUnits = () => {
   const { width, height } = useWindowDimensions();

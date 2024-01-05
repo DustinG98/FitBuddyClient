@@ -4,6 +4,9 @@ import { useEffect, useState } from "react";
 import { Socket } from '../../services/WebSocketService';
 import * as FileSystem from "expo-file-system";
 import {Buffer} from "buffer";
+import { useAppDispatch, useAppSelector } from "../../redux/hooks";
+import { ThunkDispatch } from "@reduxjs/toolkit";
+import { GetS3SignedUrl } from "../../redux/actions/posts";
 
 
 
@@ -12,25 +15,26 @@ export function CreatePost({ socket, modalOpen, toggleModal, image }: { socket: 
 
     const [loading, setLoading] = useState(false);
 
-    function getS3Url() {
-        return new Promise((resolve, reject) => {
-            function handleGetS3UrlSuccess(data: any) {
-                socket.unsubscribe('get_s3_url_success', handleGetS3UrlSuccess)
-                socket.unsubscribe('get_s3_url_error', handleGetS3UrlError)
-                resolve(data)
-            }
-            function handleGetS3UrlError(data: any) {
-                socket.unsubscribe('get_s3_url_success', handleGetS3UrlSuccess)
-                socket.unsubscribe('get_s3_url_error', handleGetS3UrlError)
-                reject(data)
-            }
+    const [ shouldCreatePost, setShouldCreatePost ] = useState(false)
 
-            socket.send('get_s3_url', { imageType: 'png' })
-            socket.subscribe('get_s3_url_success', handleGetS3UrlSuccess)
-            socket.subscribe('get_s3_url_error', handleGetS3UrlError)
-        })
-    }
+    const { s3SignedUrl } = useAppSelector((state) => state.postsState)
+    const dispatch: ThunkDispatch<any, any, any> = useAppDispatch();
 
+    useEffect(() => {
+        if(shouldCreatePost) {
+            setLoading(true)
+            dispatch(GetS3SignedUrl('png'))
+        }
+    }, [shouldCreatePost])
+
+    useEffect(() => {
+        if(s3SignedUrl && shouldCreatePost) {
+            uploadImage(s3SignedUrl)
+                .then(() => {
+                    
+                })
+        }
+    }, [s3SignedUrl])
     function createPost(description: string, image: string) {
         return new Promise((resolve, reject) => {
             function handleCreatePostSuccess(data: any) {
@@ -74,20 +78,22 @@ export function CreatePost({ socket, modalOpen, toggleModal, image }: { socket: 
     }
 
     async function handlePost(e: any) {
-        e.preventDefault();
-        setLoading(true)
-        getS3Url()
-            .then((data: any) => {
-                uploadImage(data)
-                    .then(() => {
-                        createPost(description, data.key)
-                            .then((data: any) => {
-                                setLoading(false)
+        setShouldCreatePost(true)
+        // e.preventDefault();
+        // setLoading(true)
+        // getS3Url()
+        //     .then((data: any) => {
+        //         console.log(data)
+        //         uploadImage(data)
+        //             .then(() => {
+        //                 createPost(description, data.key)
+        //                     .then((data: any) => {
+        //                         setLoading(false)
 
-                                toggleModal()
-                            })
-                    })
-            })
+        //                         toggleModal()
+        //                     })
+        //             })
+        //     })
     }
 
     return (

@@ -17,6 +17,7 @@ export default function App() {
   const [ formType, setFormType ] = useState('login'); // ['login', 'signup', 'forgot']
   const pathname = usePathname();
   const authService = new AuthService(pathname);
+  
   useEffect(() => {
     authService.checkAuth();
   }, [])
