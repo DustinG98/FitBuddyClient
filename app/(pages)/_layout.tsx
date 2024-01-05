@@ -6,7 +6,7 @@ import { TouchableOpacity } from 'react-native'
 import { Text } from 'react-native'
 import { AuthService } from '../../src/services/AuthService'
 import { socket } from '../../src/redux/store'
-import { CreatePost } from '../../src/components/posts/CreatePost'
+import { CreatePostModal } from '../../src/components/posts/CreatePost'
 import * as ImagePicker from 'expo-image-picker';
 import { CreateWorkoutPlanModal } from '../../src/components/workouts/CreateWorkoutPlanModal'
 import WorkoutsPageHeader from '../../src/components/shared/BlankPageHeader'
@@ -142,8 +142,8 @@ export default function App() {
             }
             { socket ? <NavBar socket={socket} toggleModal={toggleCreateMenu}/> : null }
             
-            {createModalVisible && socket ? 
-                <CreatePost socket={socket} modalOpen={createModalVisible} image={image} toggleModal={toggleModal} />
+            {createModalVisible ? 
+                <CreatePostModal modalOpen={createModalVisible} image={image} toggleModal={toggleModal} />
             : null}
             {
                 createWorkoutPlanModalVisible && socket ?

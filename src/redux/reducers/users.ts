@@ -3,6 +3,7 @@ import { UsersState } from "../types/state";
 import { CLEAR_NOTIFICATION, FOLLOW_USER_ERROR, FOLLOW_USER_START, FOLLOW_USER_SUCCESS, GET_FEED_ERROR, GET_FEED_START, GET_FEED_SUCCESS, GET_MY_PROFILE_SUCCESS, GET_PROFILE_ERROR, GET_PROFILE_START, GET_PROFILE_SUCCESS, SEARCH_USERS_ERROR, SEARCH_USERS_START, SEARCH_USERS_SUCCESS, SHOW_NOTIFICATION, UNFOLLOW_USER_ERROR, UNFOLLOW_USER_SUCCESS } from "../types/users";
 import { ActionTypes } from "../types/websocket";
 import { CREATE_WORKOUT_PLAN_SUCCESS, FETCH_USERS_WORKOUT_PLANS_SUCCESS } from "../types/workouts";
+import { CREATE_POST_SUCCESS } from "../types/posts";
 
 const initialState: UsersState = {
     profileLoading: false,
@@ -177,6 +178,17 @@ const posts = (state: UsersState = initialState, action: any) => {
                 message: 'Successfully created workout plan',
                 actionName: 'View',
                 action: "route#" + action.payload.workoutPlanId,
+            }
+            return {
+                ...state,
+                notification,
+            }
+        }
+
+        case CREATE_POST_SUCCESS: {
+            const notification = {
+                type: 'success',
+                message: 'Successfully created post'
             }
             return {
                 ...state,

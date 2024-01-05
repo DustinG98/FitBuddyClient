@@ -6,14 +6,10 @@ import * as FileSystem from "expo-file-system";
 import {Buffer} from "buffer";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { ThunkDispatch } from "@reduxjs/toolkit";
-import { GetS3SignedUrl } from "../../redux/actions/posts";
+import { CreatePost, GetS3SignedUrl } from "../../redux/actions/posts";
 
-
-
-export function CreatePost({ socket, modalOpen, toggleModal, image }: { socket: Socket, modalOpen: boolean, toggleModal: Function, image: ImagePicker.ImagePickerResult | null }) {
+export function CreatePostModal({ modalOpen, toggleModal, image }: { modalOpen: boolean, toggleModal: Function, image: ImagePicker.ImagePickerResult | null }) {
     const [description, setDescription] = useState('');
-
-    const [loading, setLoading] = useState(false);
 
     const [ shouldCreatePost, setShouldCreatePost ] = useState(false)
 
@@ -22,7 +18,6 @@ export function CreatePost({ socket, modalOpen, toggleModal, image }: { socket: 
 
     useEffect(() => {
         if(shouldCreatePost) {
-            setLoading(true)
             dispatch(GetS3SignedUrl('png'))
         }
     }, [shouldCreatePost])
@@ -31,27 +26,11 @@ export function CreatePost({ socket, modalOpen, toggleModal, image }: { socket: 
         if(s3SignedUrl && shouldCreatePost) {
             uploadImage(s3SignedUrl)
                 .then(() => {
-                    
+                    dispatch(CreatePost(description, s3SignedUrl.key))
+                    toggleModal()
                 })
         }
     }, [s3SignedUrl])
-    function createPost(description: string, image: string) {
-        return new Promise((resolve, reject) => {
-            function handleCreatePostSuccess(data: any) {
-                socket.unsubscribe('post_create_update_success', handleCreatePostSuccess)
-                socket.unsubscribe('post_create_update_error', handleCreatePostError)
-                resolve(data)
-            }
-            function handleCreatePostError(data: any) {
-                socket.unsubscribe('post_create_update_success', handleCreatePostSuccess)
-                socket.unsubscribe('post_create_update_error', handleCreatePostError)
-                reject(data)
-            }
-            socket.send('create_update_post', { content: description, image })
-            socket.subscribe('post_create_update_success', handleCreatePostSuccess)
-            socket.subscribe('post_create_update_error', handleCreatePostError)
-        })
-    }
 
     useEffect(() => { 
         if(image?.canceled) {
@@ -79,21 +58,6 @@ export function CreatePost({ socket, modalOpen, toggleModal, image }: { socket: 
 
     async function handlePost(e: any) {
         setShouldCreatePost(true)
-        // e.preventDefault();
-        // setLoading(true)
-        // getS3Url()
-        //     .then((data: any) => {
-        //         console.log(data)
-        //         uploadImage(data)
-        //             .then(() => {
-        //                 createPost(description, data.key)
-        //                     .then((data: any) => {
-        //                         setLoading(false)
-
-        //                         toggleModal()
-        //                     })
-        //             })
-        //     })
     }
 
     return (
@@ -103,7 +67,7 @@ export function CreatePost({ socket, modalOpen, toggleModal, image }: { socket: 
             animationType="slide"
         >
             <View style={styles.modal}>
-            {image && image.assets && image.assets[0] !== null && !loading ? <ImageBackground source={{uri: image.assets[0].uri}} style={{ width: Dimensions.get("window").width, height: Dimensions.get("window").height, zIndex: 0, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }} >
+            {image && image.assets && image.assets[0] !== null ? <ImageBackground source={{uri: image.assets[0].uri}} style={{ width: Dimensions.get("window").width, height: Dimensions.get("window").height, zIndex: 0, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }} >
                     <View style={styles.headerContainer}>
                         <Text style={{ color: '#fff' }}>Create Post</Text>
                         <TouchableHighlight onPress={() => toggleModal()}
@@ -127,7 +91,7 @@ export function CreatePost({ socket, modalOpen, toggleModal, image }: { socket: 
                         </TouchableHighlight>
                     </KeyboardAvoidingView>
                     
-                </ImageBackground> : <ActivityIndicator size="small" color="#FFDD00" />
+                </ImageBackground> : <ActivityIndicator size="large" color="#FFDD00" />
                     }
             </View>
         </Modal>
