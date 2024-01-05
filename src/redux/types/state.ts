@@ -32,6 +32,7 @@ export interface PostsState {
     posts: any;
     othersPosts: any[];
     error: any;
+    creationLoading: boolean;
     s3SignedUrl?: GetS3UrlOutput;
 }
 
